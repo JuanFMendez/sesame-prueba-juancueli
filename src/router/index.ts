@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeViewTestRouter from '../views/HomeViewTestRouter.vue'
+import Home from '../views/Home.vue'
 
 const routes = [
   {
     //pagina inicial
     path: '/', 
     name: 'Home',
-    component: HomeViewTestRouter, 
+    component: Home, 
   },
  { 
     //redireccion a la pagina inicial

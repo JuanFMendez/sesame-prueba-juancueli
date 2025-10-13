@@ -1,6 +1,7 @@
 <template>
   <div class="p-6">
 
+    <!-- COMPROBACION DE QUE TENEMOS PINIA INSTALADO OK Y LIBRERIA CSS-->
     <h1 class="text-3xl font-bold mb-6">Vacantes</h1>
     <div v-for="vac in store.vacancies" :key="vac.id" class="mb-6 p-4 border rounded-lg shadow-md">
       
@@ -33,7 +34,7 @@
 
             // cargamos mocks para comprobar que podemos recuperar desde store
             onMounted(() => {
-            store.loadMocks()
+                store.loadMocks()
             })
 
             return { store }

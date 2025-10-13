@@ -1,4 +1,37 @@
 @import "tailwindcss";
 
+body {
+  font-family: 'sans-serif', 
+}
+
+.text-lila {
+  color: #6C63FF;
+  border-color: #6C63FF;
+}
+
+.text-azulOscuro {
+  color: #1F2D52;
+}
+
+.btn-azulOscuro {
+  background-color: #1F2D52;
+  color: white;
+}
+
+.input-buscar {
+  border-color: #E2E8F0; 
+  color: #7d8591;        
+  background-color: #F8FAFC; 
+}
+
+.input-buscar:focus {
+  border-color: #6C63FF;  
+  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.3); 
+}
+
+.bg-submenu { 
+  background-color: #F8FAFC; 
+}
+
 
 
