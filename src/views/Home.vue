@@ -6,7 +6,7 @@
       <div class="absolute top-4 bottom-4 right-0 w-px bg-gray-300/50"></div>
       
       <!-- Menu lateral-->
-      <Sidebar class="flex-none h-full w-56" />
+      <Sidebar class="flex-none h-full w-56" @selectItem="seccionSeleccionada = $event"/>
 
       <!-- Área principal-->
       <div class="flex-1 flex flex-col h-full mx-6">
@@ -17,19 +17,8 @@
         <!-- Contenedor principal -->
         <div class="flex-1 p-6 bg-white rounded-3xl shadow-md flex flex-col overflow-auto space-y-4 mt-2 mb-6 border border-gray-200">
           
-          <!-- Pestañas -->
-          <TabsDisplay />
-
-          <!-- Buscador y botón -->
-          <div class="flex justify-between items-center">
-            <SearchBar />
-            <AddCandidateButton />
-          </div>
-
-          <!-- Tabla -->
-          <TableDisplayVacantes />
-          <TableDisplayCandidatos />
-
+          <!-- secciones a mostrar segun seleccion en menu lateral -->
+          <CandidatosBoard v-if="seccionSeleccionada === 'Reclutamiento'" />
 
         </div>
       </div>
@@ -40,24 +29,23 @@
 </template>
 
 <script lang="ts">
-import Sidebar from '../components/SidebarMenu.vue'
-import HeaderApp from '../components/HeaderApp.vue'
-import TabsDisplay from '../components/TabsDisplay.vue'
-import TableDisplayVacantes from '../components/TableDisplayVacantes.vue'
-import TableDisplayCandidatos from '../components/TableDisplayCandidatos.vue'
-import SearchBar from '../components/SearchBar.vue'
-import AddCandidateButton from '../components/AddCandidateButton.vue'
 
-export default {
-  name: 'Home',
-  components: {
-    Sidebar,
-    HeaderApp,
-    TabsDisplay,
-    TableDisplayVacantes,
-    TableDisplayCandidatos,
-    SearchBar,
-    AddCandidateButton
+  import Sidebar from '../components/SidebarMenu.vue'
+  import HeaderApp from '../components/HeaderApp.vue'
+  import CandidatosBoard from '../components/gestion-candidatos/CandidatosBoard.vue'
+
+  import { ref } from 'vue'
+
+  export default {
+    name: 'Home',
+    components: {
+      Sidebar,
+      HeaderApp,
+      CandidatosBoard
+    },
+    setup() {
+      const seccionSeleccionada = ref('Reclutamiento')
+      return { seccionSeleccionada }
+    }
   }
-}
 </script>

@@ -1,80 +1,109 @@
 <template>
   <aside class="w-80 bg-white text-gray-800 h-screen p-6">
 
-    <!-- Slot logo -->
+    <!-- Logo -->
     <div class="flex justify-center mb-6 p-6 bg-gray-50 rounded-lg">
-      <img :src="logo" alt="Seasme" class="w-48 h-auto object-contain"/>
+      <img :src="logo" alt="Sesame" class="w-48 h-auto object-contain"/>
     </div>
 
-    <!-- Menú principal -->
+    <!-- Contenedor principal -->
     <div class="mb-3 text-sm">
 
-      <!-- Administrador -->
-      <div class="flex justify-between items-center cursor-pointer mb-1 text-gray-600 select-none" 
-        @click="administradorAbierto = !administradorAbierto"
-      >
-        <!-- titulo y flecha flecha con direccion -->
-        <span>ADMINISTRADOR</span>
-        <ChevronDown :class="{'rotate-180': administradorAbierto}" class="w-4 h-4 transition-transform duration-200" />
+      <!-- nivel 1  -->
+      <div v-for="(nivel1, i) in menu" :key="i" class="space-y-1">
 
-      </div>
-
-      <!-- Submenu de Talento si esta abierto el de administrador -->
-      <div v-if="administradorAbierto" class="ml-3 p-4 bg-submenu rounded space-y-1" >
-
-        <!-- Talento -->
-        <div class="flex justify-between items-center cursor-pointer text-lila font-normal select-none"
-          @click="talentoAbierto = !talentoAbierto"
+        <div class="flex justify-between items-center cursor-pointer mb-1 text-gray-600 select-none"
+          @click="nivel1.open = !nivel1.open"
         >
-          <!-- estrella , titulo y flecha con direccion --> 
-          <div class="flex items-center"><Star class="w-4 h-4 mr-2" /> <span>Talento</span></div>           
-          <ChevronDown :class="{'rotate-180': talentoAbierto}" class="w-4 h-4 transition-transform duration-200" />
-
-        </div>
-        
-         <!-- Submenu de Reclutamiento si esta abierto el de talento -->
-        <div v-if="talentoAbierto" class="cursor-pointer font-bold py-2 pl-4 text-lila select-none"
-          :class="reclutamientoSeleccionado ? 'border-l-2 border-lila ml-1' : ''"
-          @click="reclutamientoSeleccionado = !reclutamientoSeleccionado"
-        >
-
-          <!-- Reclutamiento -->
-          <span :class="reclutamientoSeleccionado ? 'font-bold' : 'font-normal'">
-            Reclutamiento
-          </span>
-
+          <!-- titulo nivel 1-->
+          <span>{{ nivel1.title }}</span>
+          <ChevronDown :class="{'rotate-180': nivel1.open}" class="w-4 h-4 transition-transform duration-200" />
         </div>
 
+        <!-- nivel 2 -->
+        <div v-if="nivel1.open" class="ml-3 p-4 bg-submenu rounded space-y-1">
+
+          <div v-for="(nivel2, j) in nivel1.children" :key="j">
+            
+            <div class="flex justify-between items-center cursor-pointer text-lila font-normal select-none"
+              @click="nivel2.open = !nivel2.open"
+            >
+              <!-- titulo nivel 2 -->
+              <div class="flex items-center">
+                <component :is="nivel2.icon" class="w-4 h-4 mr-2" />
+                <span>{{ nivel2.title }}</span>
+              </div>
+              <ChevronDown :class="{'rotate-180': nivel2.open}" class="w-4 h-4 transition-transform duration-200" />
+            </div>
+
+            <!-- nivel 3 -->
+            <div v-if="nivel2.open" v-for="(nivel3, k) in nivel2.children" :key="k"
+              class="cursor-pointer font-bold py-2 pl-4 text-lila select-none"
+              :class="nivel3.active ? 'border-l-2 border-lila ml-1' : ''"
+              @click="selectItem(nivel3)"
+            >
+              <!-- opciones nivel 3 -->
+              <span :class="nivel3.active ? 'font-bold' : 'font-normal'">{{ nivel3.title }}</span>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-      
     </div>
-
   </aside>
-
 </template>
 
 <script lang="ts">
+import { ref } from 'vue'
+import { ChevronDown, Star } from 'lucide-vue-next'
+import logo from '../assets/logo-sesame.png'
 
-  import { ref } from 'vue'
-  import { ChevronDown, Star } from 'lucide-vue-next'
-  import logo from '../assets/logo-sesame.png'
+export default {
+  name: 'SidebarMenu',
+  components: { ChevronDown, Star },
+  emits: ['selectItem'],
+  setup(props, context) {
 
-  export default {
-    name: 'SidebarMenu',
-    components: {
-      ChevronDown,
-      Star,      
-    },
-    setup() {
+    // generamos menu dinamico
+    const menu = ref([
+      {
+        title: 'ADMINISTRADOR', // nivel 1
+        open: true,
+        children: [
+          {
+            title: 'Talento', // nivel 2
+            icon: Star,
+            open: true,
+            children: [
+              { title: 'Reclutamiento', active: true }, // nivel 3
+            ]
+          }
+        ]
+      }
+    ])
+    console.debug('Menu cargado:', menu.value);
 
-      //por defecto abierto todos los menus
-      const administradorAbierto = ref(true)
-      const talentoAbierto = ref(true)
-      const reclutamientoSeleccionado = ref(true)
-
-      return { administradorAbierto, talentoAbierto, reclutamientoSeleccionado, logo }
-
+    // recursividad para resetear active a false de todos los items
+    const resetActive = (items: any[]) => {
+      items.forEach(item => {
+        item.active = false
+        if (item.children) resetActive(item.children)
+      })
     }
-  }
 
+    // seleccionamos item y devolvemos el titulo seleccionado
+    const selectItem = (nivel3: any) => {
+
+      // antes de marcar como activo desmarcamos todos los demas
+      resetActive(menu.value)
+      
+      nivel3.active = true
+      console.debug('Item3 seleccionado:', nivel3.title)
+      context.emit('selectItem', nivel3.title)
+    }
+
+    return { logo, menu, selectItem }
+  }
+}
 </script>
