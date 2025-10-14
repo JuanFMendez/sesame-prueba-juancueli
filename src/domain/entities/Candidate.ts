@@ -9,7 +9,7 @@ export interface Candidate {
   web: string
   location: string
   vacancyId: string
-  statusId: string
+  statusId: string 
   address: string
   comment: string
   appliedAt: string

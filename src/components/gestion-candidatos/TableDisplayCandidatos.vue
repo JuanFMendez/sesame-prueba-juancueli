@@ -34,13 +34,15 @@
 
       const candidateStore = useCandidateStore()
       const loaderStore = useLoaderStore()
+      
       const candidates = ref<any[]>([])
+      const vacanteIdDefault = import.meta.env.VITE_DEFAULT_VACANCY_ID;
 
       // Cargar todos los candidatos
       const fetchAllCandidates = async () => {
         await loaderStore.loadWithSpinner(
           (async () => {
-            const vacanteId = "4fe9037e-e1ee-497f-94c3-fabf50475dfa";
+            const vacanteId = vacanteIdDefault;
             await candidateStore.fetchCandidatesByVacancyId(vacanteId)
             candidates.value = candidateStore.candidatesAll
           })()

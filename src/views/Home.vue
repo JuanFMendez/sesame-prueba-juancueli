@@ -18,7 +18,7 @@
         <div class="flex-1 p-6 bg-white rounded-3xl shadow-md flex flex-col overflow-auto space-y-4 mt-2 mb-6 border border-gray-200">
           
           <!-- secciones a mostrar segun seleccion en menu lateral -->
-          <CandidatosBoard v-if="seccionSeleccionada === 'Reclutamiento'" />
+          <GestionBoard v-if="seccionSeleccionada === 'Reclutamiento'" />
 
         </div>
       </div>
@@ -32,7 +32,7 @@
 
   import Sidebar from '../components/SidebarMenu.vue'
   import HeaderApp from '../components/HeaderApp.vue'
-  import CandidatosBoard from '../components/gestion-candidatos/CandidatosBoard.vue'
+  import GestionBoard from '../components/gestion-candidatos/GestionBoard.vue'
 
   import { ref } from 'vue'
 
@@ -41,7 +41,7 @@
     components: {
       Sidebar,
       HeaderApp,
-      CandidatosBoard
+      GestionBoard
     },
     setup() {
       const seccionSeleccionada = ref('Reclutamiento')
