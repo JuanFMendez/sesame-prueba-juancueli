@@ -6,20 +6,16 @@
 
     <!-- Buscador y botón -->
     <div class="flex justify-between items-center mb-4">
-      <SearchBar />
+      <SearchBar :seccionActiva="activeSection" @search="emitBusqueda" />
       <AddCandidateButton />
     </div>
 
-    <!-- Contenedor de tablas con scroll independiente -->
+    <!-- TODO : PENDIENTE CORREGIR Contenedor de tablas con scroll independiente -->    
     <div class="flex-1 border border-gray-200 rounded-lg overflow-auto max-w-full max-h-full">
-      <!-- Wrapper interno para scroll horizontal -->
+
       <div class="inline-block">
-        <TableDisplayVacantes
-          v-if="activeSection === 'vacantes'"
-        />
-        <TableDisplayCandidatos
-          v-else-if="activeSection === 'candidatos'"
-        />
+        <TableDisplayVacantes v-if="activeSection === 'vacantes'" :textoFiltro="searchText"/>
+        <TableDisplayCandidatos v-else-if="activeSection === 'candidatos'" :textoFiltro="searchText"/>
       </div>
     </div>
 
@@ -45,13 +41,21 @@ export default defineComponent({
     TableDisplayCandidatos
   },
   setup() {
+    
     const activeSection = ref('vacantes')
+    const searchText = ref('')
 
+    //seccion seleccionada en componente hijo TabsDisplay
     const emitSeccionSeleccionada = (section: string) => {
       activeSection.value = section
     }
 
-    return { activeSection, emitSeccionSeleccionada }
+    //texto buscado en componente hijo SearchBar
+    const emitBusqueda = (text: string) => {
+      searchText.value = text
+    }
+
+    return { activeSection, emitSeccionSeleccionada, searchText ,emitBusqueda }
   }
 })
 </script>

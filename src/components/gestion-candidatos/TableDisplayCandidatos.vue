@@ -1,42 +1,70 @@
 <template>
-  <div class="p-4 w-full">
+  <div class="p-4 w-full h-full flex flex-col">
     <h1 class="font-bold mb-2">Tabla Candidatos - DEBUG</h1>
 
-    <div class="mb-4 overflow-auto">
-      <pre class="inline-block">        
-        {{ JSON.stringify(candidates, null, 2) }}
-      </pre>
+    <div class="flex-1 border border-gray-200 rounded-lg overflow-auto">
+      <div class="w-full overflow-x-auto">
+        <div class="inline-block max-w-full">
+          <h2 class="font-semibold mb-2">Candidatos:</h2>
+          <div class="overflow-auto">
+            <pre class="inline-block whitespace-pre-wrap">{{ filteredCandidates }}</pre>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted, ref } from 'vue'
-  import { CandidateService } from '../../domain/services/CandidateService'
+
+  import { defineComponent, ref, onMounted, computed } from 'vue'
+  import { useCandidateStore } from '../../store/candidateStore'
+  import { useLoaderStore } from '../../store/loaderStore'
 
   export default defineComponent({
     name: 'TableDisplayCandidatos',
-    setup() {
-      const serviceCandidate = new CandidateService()
+    props: {
+      textoFiltro: {
+        type: String,
+        required: false,
+        default: ''
+      }
+    },
+    setup(props) {
 
-      // Variable reactiva para mostrar en el template
+      const candidateStore = useCandidateStore()
+      const loaderStore = useLoaderStore()
       const candidates = ref<any[]>([])
 
-      onMounted(async () => {
-        try {
+      // Cargar todos los candidatos
+      const fetchAllCandidates = async () => {
+        await loaderStore.loadWithSpinner(
+          (async () => {
+            const vacanteId = "4fe9037e-e1ee-497f-94c3-fabf50475dfa";
+            await candidateStore.fetchCandidatesByVacancyId(vacanteId)
+            candidates.value = candidateStore.candidatesAll
+          })()
+        )
+      }
 
-          //TODO : BORRAR TEST DE PETICION UNICA
-          const vacancyId = '4fe9037e-e1ee-497f-94c3-fabf50475dfa'
-          const candidatos = await serviceCandidate.getCandidatesByVacancyId(vacancyId)
-          console.debug('candidatos :', candidatos)
-          candidates.value = candidatos
+      // Filtro de candidatos
+      const filteredCandidates = computed(() => {
+        const filtro = props.textoFiltro.toLowerCase().trim()
+        if (!filtro) return candidates.value
 
-        } catch (error) {
-          console.error('Error al obtener datos:', error)
-        }
+        return candidates.value.filter(candidato =>
+          (candidato.id?.toLowerCase().includes(filtro)) ||
+          (candidato.name?.toLowerCase().includes(filtro)) ||
+          (candidato.email?.toLowerCase().includes(filtro)) ||
+          (candidato.status?.toLowerCase().includes(filtro)) ||
+          (candidato.vacancyTitle?.toLowerCase().includes(filtro))
+        )
       })
 
-      return { candidates }
+      // Cargar al montar
+      onMounted(fetchAllCandidates)
+
+      return { candidates, filteredCandidates, loaderStore, fetchAllCandidates }
     }
   })
 </script>

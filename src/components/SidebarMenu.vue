@@ -2,7 +2,7 @@
   <aside class="w-80 bg-white text-gray-800 h-screen p-6">
 
     <!-- Logo -->
-    <div class="flex justify-center mb-6 p-6 bg-gray-50 rounded-lg">
+    <div class="flex justify-center mb-6 p-6">
       <img :src="logo" alt="Sesame" class="w-48 h-auto object-contain"/>
     </div>
 
