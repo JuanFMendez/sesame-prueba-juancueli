@@ -12,7 +12,7 @@
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Apellido</th>
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Email</th>
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Estado</th>
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold w-36">Acciones</th>
+            <th class="px-4 py-3 text-right text-lg text-lila font-bold w-36">Acciones</th>
           </tr>
         </thead>
 
@@ -34,7 +34,7 @@
                   class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm"
                 >
                   Editar
-                </button>
+                </button>                
               </div>
             </td>
           </tr>
@@ -80,12 +80,6 @@
         candidates.value = candidateStore.candidatesAll
       }
 
-      // abrimos modal con el candidato incluido
-      const openEditarCandidato = (candidato: Candidate) => {
-        candidateToEdit.value = candidato
-        showCandidateModal.value = true
-      }
-
       // accion para controlar que se actualizo un candidato y hay que refrescar la lista
       // mandamos emit al padre para que sepa que hay que mostrar alerta de update
       const refreshCandidates = async () => {
@@ -117,7 +111,14 @@
         )
       })
 
-      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates }
+
+      // abrimos modal con el candidato incluido
+      const openEditarCandidato = (candidato: Candidate) => {
+        candidateToEdit.value = candidato
+        showCandidateModal.value = true
+      }
+
+      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates  }
     },
   })
 
