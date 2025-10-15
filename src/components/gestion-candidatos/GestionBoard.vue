@@ -1,26 +1,33 @@
 <template>
   <div class="flex flex-col w-full h-full space-y-4">
-    
-    <!-- Pestañas -->
+
+    <!-- pestanias -->
     <TabsDisplay @seccionSelected="emitSeccionSeleccionada" />
 
-    <!-- Buscador y botón -->
+    <!-- Buscador y boton de aniadir candidato -->
     <div class="flex justify-between items-center mb-4">
       <SearchBar :seccionActiva="activeSection" @search="emitBusqueda" />
-      <AddCandidateButton @added="onCandidateAdded" @updated="onCandidateUpdated"/>
+      <!-- emite evento de aniadido para mostrar alertas-->
+      <AddCandidateButton @added="onCandidateAdded"/>
     </div>
 
-    <!-- Alerta de éxito o error -->
-    <AlertMessage v-if="alerta.visible" :message="alerta.message" @close="alerta.cerrar()"/>
+    <!-- mensajes de alerta -->
+    <AlertMessage v-if="alerta.visible" :message="alerta.message" @close="alerta.cerrar()" />
 
-    <!-- Contenedor de tablas con scroll independiente -->    
-    <div class="flex-1 border border-gray-200 rounded-lg overflow-auto max-w-full max-h-full">
-      <div class="inline-block">
-        <TableDisplayVacantes v-if="activeSection === 'vacantes'" :textoFiltro="searchText"/>
-        <TableDisplayCandidatos v-else-if="activeSection === 'candidatos'" :textoFiltro="searchText" />
+    <!-- Contenedor principal de displays -->
+    <div class="flex-1 border border-gray-200 rounded-lg overflow-auto w-full h-full">
+      <div class="w-full">
+        
+        <TableDisplayVacantes v-if="activeSection === 'vacantes'" :textoFiltro="searchText" />
+        
+        <!-- emite evento de editado para mostrar alerta -->
+        <TableDisplayCandidatos v-else-if="activeSection === 'candidatos'" :textoFiltro="searchText" @updated="onCandidateUpdated" />
+
       </div>
     </div>
+
   </div>
+
 </template>
 
 <script lang="ts">
@@ -33,7 +40,6 @@
   import { Alerta } from '../../domain/entities/Alerta'
   import AlertMessage from '../AlertMessage.vue'
 
-
   export default defineComponent({
     name: 'GestionBoard',
     components: {
@@ -42,7 +48,7 @@
       AddCandidateButton,
       TableDisplayVacantes,
       TableDisplayCandidatos,
-      AlertMessage,
+      AlertMessage
     },
     setup() {
 
@@ -50,17 +56,17 @@
       const searchText = ref('')
       const alerta = reactive(new Alerta(''))
 
-      // Cambiar sección desde TabsDisplay
+      // Emite la seccion seleccionada en las pestañas
       const emitSeccionSeleccionada = (section: string) => {
         activeSection.value = section
       }
 
-      // Actualizar texto de búsqueda
+      // Emite el texto de busqueda ingresado
       const emitBusqueda = (text: string) => {
         searchText.value = text
       }
 
-      //construimos variable de alerta de éxito
+      // Muestra una alerta de exito con el mensaje dado
       const mostrarAlertaExito = (mensaje: string) => {
         alerta.message = mensaje
         alerta.visible = true
@@ -68,22 +74,27 @@
         setTimeout(() => alerta.cerrar(), 3000)
       }
 
-      // Eventos desde AddCandidateButton
+      // Maneja la accion de agregar un candidato
       const onCandidateAdded = (success: boolean) => {
         if (success) mostrarAlertaExito('Candidato agregado correctamente.')
       }
-
+      // Maneja la accion de actualizar un candidato
       const onCandidateUpdated = (success: boolean) => {
-        if (success) mostrarAlertaExito('Candidato actualizado correctamente.')
+        if (success) mostrarAlertaExito('Candidato modificado correctamente.')
       }
 
       onMounted(() => {
-        // Aseguramos que la alerta esté cerrada al montar el componente
         alerta.cerrar()
-      })  
+      })
 
-      return { 
-        activeSection, searchText,alerta, emitSeccionSeleccionada, emitBusqueda, onCandidateAdded, onCandidateUpdated 
+      return {
+        activeSection,
+        searchText,
+        alerta,
+        emitSeccionSeleccionada,
+        emitBusqueda,
+        onCandidateAdded,
+        onCandidateUpdated
       }
     }
   })

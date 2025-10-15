@@ -8,18 +8,14 @@
       <!-- Menu lateral-->
       <Sidebar class="flex-none h-full w-56" @selectItem="seccionSeleccionada = $event"/>
 
-      <!-- Área principal-->
-      <div class="flex-1 flex flex-col h-full mx-6">
-        
+      <!-- Área principal segun seleccion de aside-->
+      <div class="flex-1 flex flex-col h-full mx-6" v-if="seccionSeleccionada === 'Reclutamiento'" >
+
         <!-- Cabecera -->
-        <HeaderApp />
-
+        <HeaderApp :titulo="'Reclutamiento'"/>
         <!-- Contenedor principal -->
-        <div class="flex-1 p-6 bg-white rounded-3xl shadow-md flex flex-col overflow-auto space-y-4 mt-2 mb-6 border border-gray-200">
-          
-          <!-- secciones a mostrar segun seleccion en menu lateral -->
-          <GestionBoard v-if="seccionSeleccionada === 'Reclutamiento'" />
-
+        <div class="flex-1 p-6 bg-white rounded-3xl shadow-md flex flex-col overflow-auto space-y-4 mt-2 mb-6 border border-gray-200">          
+          <GestionBoard />
         </div>
       </div>
 
@@ -44,6 +40,8 @@
       GestionBoard
     },
     setup() {
+
+      //valor por defecto porque solo hay una seccion actualmente en el aside
       const seccionSeleccionada = ref('Reclutamiento')
       return { seccionSeleccionada }
     }

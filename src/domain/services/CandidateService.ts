@@ -10,7 +10,7 @@ export class CandidateService {
     return res.data.data
   }
 
- //recuperamos posibles estados de los candidatos
+ //recuperamos posibles estados de los candidatos 
   async getCandidateStatuses(vacancyId: string): Promise<CandidateStatus[]> {
     const res = await axiosInstance.get<{ data: CandidateStatus[] }>(`/candidate-status/${vacancyId}`)
     return res.data.data
@@ -21,5 +21,18 @@ export class CandidateService {
     const res = await axiosInstance.post<{ data: Candidate }>(`/candidates`, candidate)
     return res.data.data
   }
+
+  // Recuperar UN CANDIDATO por ID
+  async getCandidateById(candidateId: string): Promise<Candidate> {
+    const res = await axiosInstance.get<{ data: Candidate }>(`/candidates/${candidateId}`)
+    return res.data.data
+  }
+
+  // actualizar UN CANDIDATO
+  async updateCandidate(candidateId: string, candidateData: Partial<Candidate>): Promise<Candidate> {
+    const res = await axiosInstance.put<{ data: Candidate }>(`/candidates/${candidateId}`, candidateData)
+    return res.data.data
+  }
+
 
 }

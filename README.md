@@ -1,5 +1,18 @@
-# Vue 3 + TypeScript + Vite
+Sidebar
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+    Menu dinámico
+    emite una seccion seleccionada (actualmente solo hay una, es la que ponemos por defecto, 'Reclutamiento')
+    lucide-vue-next para iconos (flechas y estrella)
+    icono de sesame
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+Home.vue
+
+    contiene el sidebar lateral que recupera la opcion del menu que queremos mostrar
+    tenemos una cabecera headerApp a la que le mandamos desde el componente padre el titulo que queremos que tenga (para posibilidad de reutilizacion)
+    contenedor principal, donde ocurre la gestion de los candidatos y vacantes
+
+
+
+
+
+

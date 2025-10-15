@@ -1,72 +1,95 @@
 <template>
-  <div class="p-4 w-full h-full flex flex-col">
-    <h1 class="font-bold mb-2">Tabla Candidatos - DEBUG</h1>
+  <div class="p-4">
+    <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
 
-    <div class="flex-1 border border-gray-200 rounded-lg overflow-auto">
-      <div class="w-full overflow-x-auto">
-        <div class="inline-block max-w-full">
-          <h2 class="font-semibold mb-2">Candidatos:</h2>
-          <div class="overflow-auto">
-            <pre class="inline-block whitespace-pre-wrap">{{ filteredCandidates }}</pre>
-          </div>
-        </div>
-      </div>
+      <table class="min-w-full table-auto border-collapse rounded-t-xl overflow-hidden">
+
+        <thead class="bg-gray-200">
+          <tr class="select-none">
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Nombre</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Apellido</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Email</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Estado</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold w-36">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="candidato in candidates" :key="candidato.id" 
+            class="hover:bg-gray-150 text-center cursor-pointer border-b border-gray-100 odd:bg-gray-150 even:bg-gray-50"
+            @dblclick="openEditarCandidato(candidato)"
+          >
+            <td class="px-4 py-3">{{ candidato.firstName }}</td>
+            <td class="px-4 py-3">{{ candidato.lastName }}</td>
+            <td class="px-4 py-3">{{ candidato.email }}</td>
+            <td class="px-4 py-3">{{ candidato.status?.name }}</td>
+            <td class="px-4 py-3 w-36">
+              <div class="flex justify-end gap-2">
+                <button @click="openEditarCandidato(candidato)" class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm">
+                  Editar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
     </div>
+
+    <!-- Modal de edición -->
+    <CandidateModal v-if="showCandidateModal" :candidateData="candidateToEdit" @close="showCandidateModal = false" @updated="refreshCandidates" />
+
   </div>
 </template>
 
 <script lang="ts">
 
-  import { defineComponent, ref, onMounted, computed } from 'vue'
+  import { defineComponent, ref, onMounted } from 'vue'
   import { useCandidateStore } from '../../store/candidateStore'
-  import { useLoaderStore } from '../../store/loaderStore'
+  import CandidateModal from './addCandidate/CandidateModal.vue'
+  import type { Candidate } from '../../domain/entities/Candidate'
+  import { ArrowUpDownIcon } from 'lucide-vue-next'
 
   export default defineComponent({
-    name: 'TableDisplayCandidatos',
-    props: {
-      textoFiltro: {
-        type: String,
-        required: false,
-        default: ''
-      }
-    },
-    setup(props) {
-
-      const candidateStore = useCandidateStore()
-      const loaderStore = useLoaderStore()
+    components: { CandidateModal, ArrowUpDownIcon },
+    setup(props, { emit }) {
       
-      const candidates = ref<any[]>([])
-      const vacanteIdDefault = import.meta.env.VITE_DEFAULT_VACANCY_ID;
+      const candidateStore = useCandidateStore()
 
-      // Cargar todos los candidatos
-      const fetchAllCandidates = async () => {
-        await loaderStore.loadWithSpinner(
-          (async () => {
-            const vacanteId = vacanteIdDefault;
-            await candidateStore.fetchCandidatesByVacancyId(vacanteId)
-            candidates.value = candidateStore.candidatesAll
-          })()
-        )
+      const candidates = ref<Candidate[]>([])
+      const showCandidateModal = ref(false)
+      const candidateToEdit = ref<Candidate | undefined>(undefined)
+
+      // recuperamos candidatos de una vacante
+      const getCandidatesByVacancyId = async () => {
+        await candidateStore.getCandidatesByVacancyId(import.meta.env.VITE_DEFAULT_VACANCY_ID)
+        candidates.value = candidateStore.candidatesAll
       }
 
-      // Filtro de candidatos
-      const filteredCandidates = computed(() => {
-        const filtro = props.textoFiltro.toLowerCase().trim()
-        if (!filtro) return candidates.value
+      //abrimos modal con el candidato incluido
+      const openEditarCandidato = (candidato: Candidate) => {
+        candidateToEdit.value = candidato
+        showCandidateModal.value = true
+      }
 
-        return candidates.value.filter(candidato =>
-          (candidato.id?.toLowerCase().includes(filtro)) ||
-          (candidato.name?.toLowerCase().includes(filtro)) ||
-          (candidato.email?.toLowerCase().includes(filtro)) ||
-          (candidato.status?.toLowerCase().includes(filtro)) ||
-          (candidato.vacancyTitle?.toLowerCase().includes(filtro))
-        )
+      //accion para controlar que se actualizo un candidato y hay que refrescar la lista
+      //mandamos emit al padre para que sepa que hay que mostrar alerta de update
+      const refreshCandidates = async () => {
+        await getCandidatesByVacancyId()
+        emit('updated', true)
+        showCandidateModal.value = false
+      }
+
+      //recuperamos candidatos de vacante 
+      onMounted(async () => {
+        await getCandidatesByVacancyId()
       })
 
-      // Cargar al montar
-      onMounted(fetchAllCandidates)
-
-      return { candidates, filteredCandidates, loaderStore, fetchAllCandidates }
-    }
+      return {
+        candidates, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates
+      }
+    },
   })
+
 </script>

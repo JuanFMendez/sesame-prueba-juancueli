@@ -4,7 +4,7 @@
       Añadir candidato
     </button>
     <!-- emit para cerrar modal y confimando quee se agrego candidato -->
-    <CandidateModal v-if="showModal" @close="showModal = false" @added="$emit('added', $event)" @updated="$emit('updated', $event)"
+    <CandidateModal v-if="showModal" @close="showModal = false" @added="$emit('added', $event)"
 />  </div>
 </template>
 
@@ -16,7 +16,7 @@
   export default defineComponent({
     name: 'AddCandidateButton',
     components: { CandidateModal },
-    emits: ['added', 'updated'],
+    emits: ['added'],
     setup() {
       const showModal = ref(false)
       return { showModal }
