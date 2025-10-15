@@ -2,8 +2,10 @@
   <div class="p-4">
     <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
 
+      <!-- Tabla de candidatos -->
       <table class="min-w-full table-auto border-collapse rounded-t-xl overflow-hidden">
 
+        <!-- Cabecera de la tabla -->
         <thead class="bg-gray-200">
           <tr class="select-none">
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Nombre</th>
@@ -14,10 +16,12 @@
           </tr>
         </thead>
 
+        <!-- Cuerpo de la tabla -->
         <tbody>
-          <tr v-for="candidato in candidates" :key="candidato.id" 
-            class="hover:bg-gray-150 text-center cursor-pointer border-b border-gray-100 odd:bg-gray-150 even:bg-gray-50"
-            @dblclick="openEditarCandidato(candidato)"
+          <!-- Iteramos sobre los candidatos filtrados -->
+          <tr v-for="candidato in candidatosFiltradosByBusqueda" :key="candidato.id" 
+              class="hover:bg-gray-150 text-center cursor-pointer border-b border-gray-100 odd:bg-gray-150 even:bg-gray-50"
+              @dblclick="openEditarCandidato(candidato)"
           >
             <td class="px-4 py-3">{{ candidato.firstName }}</td>
             <td class="px-4 py-3">{{ candidato.lastName }}</td>
@@ -25,7 +29,10 @@
             <td class="px-4 py-3">{{ candidato.status?.name }}</td>
             <td class="px-4 py-3 w-36">
               <div class="flex justify-end gap-2">
-                <button @click="openEditarCandidato(candidato)" class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm">
+                <button 
+                  @click="openEditarCandidato(candidato)" 
+                  class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm"
+                >
                   Editar
                 </button>
               </div>
@@ -45,16 +52,22 @@
 
 <script lang="ts">
 
-  import { defineComponent, ref, onMounted } from 'vue'
+  import { defineComponent, ref, onMounted, computed } from 'vue'
   import { useCandidateStore } from '../../store/candidateStore'
   import CandidateModal from './addCandidate/CandidateModal.vue'
   import type { Candidate } from '../../domain/entities/Candidate'
-  import { ArrowUpDownIcon } from 'lucide-vue-next'
 
   export default defineComponent({
-    components: { CandidateModal, ArrowUpDownIcon },
+    components: { CandidateModal },
+    props: {
+      textoFiltro: {
+        type: String,
+        default: ''
+      }
+    },
+    emits: ['updated'],
     setup(props, { emit }) {
-      
+
       const candidateStore = useCandidateStore()
 
       const candidates = ref<Candidate[]>([])
@@ -67,28 +80,44 @@
         candidates.value = candidateStore.candidatesAll
       }
 
-      //abrimos modal con el candidato incluido
+      // abrimos modal con el candidato incluido
       const openEditarCandidato = (candidato: Candidate) => {
         candidateToEdit.value = candidato
         showCandidateModal.value = true
       }
 
-      //accion para controlar que se actualizo un candidato y hay que refrescar la lista
-      //mandamos emit al padre para que sepa que hay que mostrar alerta de update
+      // accion para controlar que se actualizo un candidato y hay que refrescar la lista
+      // mandamos emit al padre para que sepa que hay que mostrar alerta de update
       const refreshCandidates = async () => {
         await getCandidatesByVacancyId()
         emit('updated', true)
         showCandidateModal.value = false
       }
 
-      //recuperamos candidatos de vacante 
+      // recuperamos candidatos de vacante 
       onMounted(async () => {
         await getCandidatesByVacancyId()
       })
 
-      return {
-        candidates, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates
-      }
+      // Mostramos los candidatos listos para filtrar según el texto de búsqueda
+      const candidatosFiltradosByBusqueda = computed(() => {
+
+        //si no hay texto, dejamos los candidatos originales
+        if (!props.textoFiltro){
+          return candidates.value
+        } 
+
+        //pasamos a minuscula todo para filtar la busqueda 
+        const filtro = props.textoFiltro.toLowerCase().trim()
+        return candidates.value.filter(c =>
+          c.firstName.toLowerCase().includes(filtro) ||
+          c.lastName.toLowerCase().includes(filtro) ||
+          c.email.toLowerCase().includes(filtro) ||
+          c.status?.name.toLowerCase().includes(filtro)
+        )
+      })
+
+      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates }
     },
   })
 

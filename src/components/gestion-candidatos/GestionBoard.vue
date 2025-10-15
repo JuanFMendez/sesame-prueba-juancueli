@@ -31,6 +31,7 @@
 </template>
 
 <script lang="ts">
+
   import { defineComponent, ref, reactive, onMounted } from 'vue'
   import TabsDisplay from './TabsDisplay.vue'
   import SearchBar from './SearchBar.vue'
@@ -70,7 +71,7 @@
       const mostrarAlertaExito = (mensaje: string) => {
         alerta.message = mensaje
         alerta.visible = true
-        alerta.tipo = 'success'
+        alerta.tipo = 'success'      
         setTimeout(() => alerta.cerrar(), 3000)
       }
 
