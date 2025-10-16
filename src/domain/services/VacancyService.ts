@@ -1,5 +1,6 @@
 import type { Vacancy } from '../entities/Vacancy'
 import { axiosInstance } from './axiosInstance'
+import type { CandidateStatus } from '../entities/CandidateStatus'
 
 export class VacancyService {
 
@@ -15,4 +16,15 @@ export class VacancyService {
     return res.data.data
   }
   
+ //recuperamos posibles estados de los candidatos 
+  async getCandidateStatuses(vacancyId: string): Promise<CandidateStatus[]> {
+    const res = await axiosInstance.get<{ data: CandidateStatus[] }>(`/candidate-status/${vacancyId}`)
+    const allStatuses = res.data.data
+
+    // dentro de todos los estados, usamos solo estos, filtramos.
+    const allowedStatuses = ['Nuevo', 'En proceso', 'Seleccionado', 'Descartado']
+    return allStatuses.filter(status => allowedStatuses.includes(status.name))
+    
+  }
+
 }

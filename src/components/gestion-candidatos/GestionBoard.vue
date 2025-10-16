@@ -1,13 +1,12 @@
 <template>
-  <div class="flex flex-col w-full h-full space-y-4">
+  <div class="flex flex-col w-full h-screen space-y-4"> 
 
-    <!-- pestanias -->
+    <!-- pestañas -->
     <TabsDisplay @seccionSelected="emitSeccionSeleccionada" />
 
     <!-- Buscador y boton de aniadir candidato -->
     <div class="flex justify-between items-center mb-4">
       <SearchBar :seccionActiva="activeSection" @search="emitBusqueda" />
-      <!-- emite evento de aniadido para mostrar alertas-->
       <AddCandidateButton @added="onCandidateAdded"/>
     </div>
 
@@ -15,19 +14,14 @@
     <AlertMessage v-if="alerta.visible" :message="alerta.message" @close="alerta.cerrar()" />
 
     <!-- Contenedor principal de displays -->
-    <div class="flex-1 border border-gray-200 rounded-lg overflow-auto w-full h-full">
-      <div class="w-full">
-        
+    <div class="flex-1 rounded-lg overflow-auto w-full flex flex-col"> <!-- flex-col para que hijos con h-full funcionen -->
+      <div class="flex-1 w-full"> 
         <TableDisplayVacantes v-if="activeSection === 'vacantes'" :textoFiltro="searchText" />
-        
-        <!-- emite evento de editado para mostrar alerta -->
-        <TableDisplayCandidatos v-else-if="activeSection === 'candidatos'" :textoFiltro="searchText" @updated="onCandidateUpdated" />
-
+        <TableDisplayCandidatos v-else-if="activeSection === 'candidatos'" :textoFiltro="searchText" @updated="onCandidateUpdated" class="h-full" />
       </div>
     </div>
 
   </div>
-
 </template>
 
 <script lang="ts">

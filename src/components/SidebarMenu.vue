@@ -76,13 +76,12 @@ export default {
             icon: Star,
             open: true,
             children: [
-              { title: 'Reclutamiento', active: true }, // nivel 3
+               { title: 'Reclutamiento', active: true } // nivel 3
             ]
           }
         ]
       }
     ])
-    console.debug('Menu cargado:', menu.value);
 
     // recursividad para resetear active a false de todos los items
     const resetActive = (items: any[]) => {
@@ -99,7 +98,7 @@ export default {
       resetActive(menu.value)
       
       nivel3.active = true
-      console.debug('Item3 seleccionado:', nivel3.title)
+      console.debug('elemento nivel 3 seleccionado:', nivel3.title)
       context.emit('selectItem', nivel3.title)
     }
 

@@ -12,7 +12,7 @@
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Apellido</th>
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Email</th>
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Estado</th>
-            <th class="px-4 py-3 text-right text-lg text-lila font-bold w-36">Acciones</th>
+            <th class="px-4 py-3 text-right text-lg text-lila font-bold w-36"></th>
           </tr>
         </thead>
 

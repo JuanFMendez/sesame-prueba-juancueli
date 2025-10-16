@@ -38,7 +38,7 @@
           <div>
             <label class="block text-sm font-normal mb-1 text-lila">Estado <span class="text-red-500">*</span></label>
             <select v-model="candidate.statusId" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required>
-              <option v-for="status in candidateStatuses" :key="status.id" :value="status.id">{{ status.name }}</option>
+              <option v-for="status in vacancyCandidateStatuses" :key="status.id" :value="status.id">{{ status.name }}</option>
             </select>
           </div>
         </div>
@@ -82,7 +82,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, computed, onMounted } from 'vue'
 import { useCandidateStore } from '../../../store/candidateStore'
-import { CandidateService } from '../../../domain/services/CandidateService'
+import { VacancyService } from '../../../domain/services/VacancyService'
 import type { Candidate } from '../../../domain/entities/Candidate'
 import type { CandidateStatus } from '../../../domain/entities/CandidateStatus'
 import { useLoaderStore } from '../../../store/loaderStore'
@@ -100,7 +100,7 @@ export default defineComponent({
 
     const candidateStore = useCandidateStore()
     const loaderStore = useLoaderStore()
-    const candidateService = new CandidateService()
+    const vacancyService = new VacancyService();
 
     const vacancyId = import.meta.env.VITE_DEFAULT_VACANCY_ID
 
@@ -117,7 +117,7 @@ export default defineComponent({
     const alerta = reactive(new Alerta(''))
 
     // Lista de estados de candidato
-    const candidateStatuses = ref<CandidateStatus[]>([])
+    const vacancyCandidateStatuses = ref<CandidateStatus[]>([])
 
     // Datos basicos para un candidato nuevo
     const defaultCandidate: Candidate = {
@@ -173,16 +173,16 @@ export default defineComponent({
         (async () => {
           try {
             // carga los estados de candidato disponibles
-            candidateStatuses.value = await candidateService.getCandidateStatuses(vacancyId)
+            vacancyCandidateStatuses.value = await vacancyService.getCandidateStatuses(vacancyId)
             // Si no hay estados disponibles, muestra error
-            if (!candidateStatuses.value || candidateStatuses.value.length === 0) {
+            if (!vacancyCandidateStatuses.value || vacancyCandidateStatuses.value.length === 0) {
               alerta.message = 'No hay estados de candidato disponibles'
               alerta.visible = true
               alerta.tipo = 'error'
 
             // Si el candidato tiene estado, lo mantiene por defecto para mostrar. Si no, asigna el primero de la lista            
-            } else if (!candidate.statusId && candidateStatuses.value[0]) {
-              candidate.statusId = candidateStatuses.value[0].id
+            } else if (!candidate.statusId && vacancyCandidateStatuses.value[0]) {
+              candidate.statusId = vacancyCandidateStatuses.value[0].id
             }
           } catch (error) {
             console.error('Error cargando estados del candidato:', error)
@@ -227,7 +227,7 @@ export default defineComponent({
 
     const closeModal = () => emit('close')
 
-    return { candidate, candidateStatuses, submitForm, closeModal, formIsValid, alerta, modalTitle, submitButtonText }
+    return { candidate, vacancyCandidateStatuses, submitForm, closeModal, formIsValid, alerta, modalTitle, submitButtonText }
   },
 })
 </script>
