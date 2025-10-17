@@ -6,15 +6,15 @@
 
       <!-- pestaña vacantes -->
       <button class="px-4 py-2 -mb-px" 
-        :class="[ 'border-b-2 px-4 py-2 font-especifico', activeTab === 'vacantes' ? 'text-lila font-bold' : 'border-transparent text-gray-300 font-normal opacity-50']"
+        :class="[ 'border-b-2 px-4 py-2', activeTab === 'vacantes' ? 'text-lila font-bold font-especifico' : 'border-transparent text-gray-300 font-normal opacity-50 font-especifico-ligth']"
         @click="seccionSelected('vacantes')"
       >
         Vacantes
       </button>
 
       <!-- pestaña candidatos -->
-      <button class="px-4 py-2 -mb-px font-especifico" 
-        :class="['border-b-2 px-4 py-2', activeTab === 'candidatos' ? 'text-lila font-bold': 'border-transparent text-gray-300 font-normal opacity-50']"
+      <button class="px-4 py-2 -mb-px" 
+        :class="['border-b-2 px-4 py-2', activeTab === 'candidatos' ? 'text-lila font-bold font-especifico': 'border-transparent text-gray-300 font-normal opacity-50 font-especifico-ligth']"
         @click="seccionSelected('candidatos')"
       >
         Candidatos
