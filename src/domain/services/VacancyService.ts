@@ -21,7 +21,7 @@ export class VacancyService {
     const res = await axiosInstance.get<{ data: CandidateStatus[] }>(`/candidate-status/${vacancyId}`)
     const allStatuses = res.data.data
 
-    // dentro de todos los estados, usamos solo estos, filtramos.
+    // dentro de todos los estados, usamos solo estos (segun imagen), filtramos.
     const allowedStatuses = ['Nuevo', 'En proceso', 'Seleccionado', 'Descartado']
     return allStatuses.filter(status => allowedStatuses.includes(status.name))
     

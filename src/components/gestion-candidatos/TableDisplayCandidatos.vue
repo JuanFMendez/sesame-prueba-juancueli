@@ -1,12 +1,12 @@
 <template>
-  <div class="p-4">
+  <div class="p-1">
     <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
 
       <!-- Tabla de candidatos -->
       <table class="min-w-full table-auto border-collapse rounded-t-xl overflow-hidden">
-
-        <!-- Cabecera de la tabla -->
+        
         <thead class="bg-gray-200">
+
           <tr class="select-none">
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Nombre</th>
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Apellido</th>
@@ -14,30 +14,32 @@
             <th class="px-4 py-3 text-center text-lg text-lila font-bold">Estado</th>
             <th class="px-4 py-3 text-right text-lg text-lila font-bold w-36"></th>
           </tr>
-        </thead>
 
-        <!-- Cuerpo de la tabla -->
+        </thead>
         <tbody>
-          <!-- Iteramos sobre los candidatos filtrados -->
-          <tr v-for="candidato in candidatosFiltradosByBusqueda" :key="candidato.id" 
-              class="hover:bg-gray-150 text-center cursor-pointer border-b border-gray-100 odd:bg-gray-150 even:bg-gray-50"
-              @dblclick="openEditarCandidato(candidato)"
+
+          <tr v-for="candidato in candidatosFiltradosByBusqueda" :key="candidato.id"
+            class="hover:bg-gray-150 text-center cursor-pointer border-b border-gray-100 odd:bg-gray-150 even:bg-gray-50"
+            @dblclick="openEditarCandidato(candidato)"
           >
             <td class="px-4 py-3">{{ candidato.firstName }}</td>
             <td class="px-4 py-3">{{ candidato.lastName }}</td>
             <td class="px-4 py-3">{{ candidato.email }}</td>
-            <td class="px-4 py-3">{{ candidato.status?.name }}</td>
+            <td class="px-4 py-3">
+              <span :class="candidato.status?.name === 'Seleccionado' ? 'text-green-600 font-semibold' : ''">
+                {{ candidato.status?.name }}
+              </span>
+            </td>
             <td class="px-4 py-3 w-36">
               <div class="flex justify-end gap-2">
-                <button 
-                  @click="openEditarCandidato(candidato)" 
-                  class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm"
-                >
+                <button @click="openEditarCandidato(candidato)" class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm">
                   Editar
                 </button>                
-              </div>
+              </div>              
             </td>
+
           </tr>
+
         </tbody>
 
       </table>
@@ -50,59 +52,58 @@
   </div>
 </template>
 
+
 <script lang="ts">
 
   import { defineComponent, ref, onMounted, computed } from 'vue'
   import { useCandidateStore } from '../../store/candidateStore'
   import CandidateModal from './addCandidate/CandidateModal.vue'
   import type { Candidate } from '../../domain/entities/Candidate'
+  import { useLoaderStore } from '../../store/loaderStore'
 
   export default defineComponent({
     components: { CandidateModal },
     props: {
-      textoFiltro: {
-        type: String,
-        default: ''
-      }
+      textoFiltro: { type: String, default: '' }
     },
     emits: ['updated'],
     setup(props, { emit }) {
 
       const candidateStore = useCandidateStore()
-
+      const loaderStore = useLoaderStore()
       const candidates = ref<Candidate[]>([])
       const showCandidateModal = ref(false)
       const candidateToEdit = ref<Candidate | undefined>(undefined)
 
       // recuperamos candidatos de una vacante
       const getCandidatesByVacancyId = async () => {
-        await candidateStore.getCandidatesByVacancyId(import.meta.env.VITE_DEFAULT_VACANCY_ID)
-        candidates.value = candidateStore.candidatesAll
+        await loaderStore.loadWithSpinner((async () => {
+          await candidateStore.getCandidatesByVacancyId(import.meta.env.VITE_DEFAULT_VACANCY_ID)
+          candidates.value = candidateStore.candidatesAll
+        })())
       }
 
-      // accion para controlar que se actualizo un candidato y hay que refrescar la lista
-      // mandamos emit al padre para que sepa que hay que mostrar alerta de update
+      // refresco lista y emit
       const refreshCandidates = async () => {
         await getCandidatesByVacancyId()
         emit('updated', true)
         showCandidateModal.value = false
       }
 
-      // recuperamos candidatos de vacante 
-      onMounted(async () => {
-        await getCandidatesByVacancyId()
+      //cargamos candidatos de la vacante
+      onMounted(async () => { 
+        await getCandidatesByVacancyId() 
       })
 
-      // Mostramos los candidatos listos para filtrar según el texto de búsqueda
+      // filtrado por busqueda 
       const candidatosFiltradosByBusqueda = computed(() => {
 
-        //si no hay texto, dejamos los candidatos originales
         if (!props.textoFiltro){
           return candidates.value
         } 
 
-        //pasamos a minuscula todo para filtar la busqueda 
         const filtro = props.textoFiltro.toLowerCase().trim()
+
         return candidates.value.filter(c =>
           c.firstName.toLowerCase().includes(filtro) ||
           c.lastName.toLowerCase().includes(filtro) ||
@@ -111,14 +112,13 @@
         )
       })
 
-
-      // abrimos modal con el candidato incluido
+      // seleccionamos el candidato que se quiere mostrar y abrimos modal
       const openEditarCandidato = (candidato: Candidate) => {
         candidateToEdit.value = candidato
         showCandidateModal.value = true
       }
 
-      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates  }
+      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates }
     },
   })
 

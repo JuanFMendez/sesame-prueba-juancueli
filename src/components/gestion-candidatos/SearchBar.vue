@@ -39,9 +39,11 @@
     setup(props, { emit }) {
 
       const searchText = ref('')
-
-      const emitSearch = () => emit('search', searchText.value)
-
+      
+      //emitir texto busqueda
+      const emitSearch = () => {
+        emit('search', searchText.value)
+      }
       
       const tooltipText = computed(() => {
         

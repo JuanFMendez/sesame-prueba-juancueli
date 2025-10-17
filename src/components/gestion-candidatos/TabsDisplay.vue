@@ -5,8 +5,7 @@
     <div class="flex space-x-4">
 
       <!-- pestaña vacantes -->
-      <button
-        class="px-4 py-2 -mb-px"
+      <button class="px-4 py-2 -mb-px" 
         :class="[ 'border-b-2 px-4 py-2', activeTab === 'vacantes' ? 'text-lila font-bold' : 'border-transparent text-gray-300 font-normal opacity-50']"
         @click="seccionSelected('vacantes')"
       >
@@ -14,8 +13,7 @@
       </button>
 
       <!-- pestaña candidatos -->
-      <button
-        class="px-4 py-2 -mb-px"
+      <button class="px-4 py-2 -mb-px" 
         :class="['border-b-2 px-4 py-2', activeTab === 'candidatos' ? 'text-lila font-bold': 'border-transparent text-gray-300 font-normal opacity-50']"
         @click="seccionSelected('candidatos')"
       >
@@ -33,7 +31,7 @@ import { ref } from 'vue'
 export default {
   name: 'TabsDisplay',
   emits: ['seccionSelected'], 
-  setup(props, context) {
+  setup(props, { emit }) {
 
     //tab activa por defecto
     const activeTab = ref('vacantes')
@@ -41,7 +39,7 @@ export default {
     //seleccion de pestania y emitir evento
     const seccionSelected = (tabSeleccionado: string) => {
       activeTab.value = tabSeleccionado
-      context.emit('seccionSelected', tabSeleccionado) 
+      emit('seccionSelected', tabSeleccionado) 
     }
 
     return { activeTab, seccionSelected }

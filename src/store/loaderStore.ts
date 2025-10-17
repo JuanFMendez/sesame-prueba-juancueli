@@ -12,6 +12,7 @@ export const useLoaderStore = defineStore('loaderStore', {
     stopLoading() {
       this.loading = false
     },
+    //funcion para 'capturar' peticiones y hasta no finalizar no quitar el loader
     async loadWithSpinner<T>(call: Promise<T>): Promise<T> {
       this.startLoading()
       try {

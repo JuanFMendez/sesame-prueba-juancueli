@@ -13,6 +13,7 @@
 
         <!-- Cabecera -->
         <HeaderApp :titulo="'Reclutamiento'"/>
+        
         <!-- Contenedor principal -->
         <div class="flex-1 p-6 bg-white rounded-3xl shadow-md flex flex-col overflow-auto space-y-4 mt-2 mb-6 border border-gray-200">          
           <GestionBoard />
@@ -43,6 +44,7 @@
 
       //valor por defecto porque solo hay una seccion actualmente en el aside
       const seccionSeleccionada = ref('Reclutamiento')
+      
       return { seccionSeleccionada }
     }
   }

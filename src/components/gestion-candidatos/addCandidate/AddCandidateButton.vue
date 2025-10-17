@@ -3,9 +3,11 @@
     <button class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm" @click="showModal = true">
       Añadir candidato
     </button>
+    
     <!-- emit para cerrar modal y confimando quee se agrego candidato -->
-    <CandidateModal v-if="showModal" @close="showModal = false" @added="$emit('added', $event)"
-/>  </div>
+    <CandidateModal v-if="showModal" @close="showModal = false" @added="emitAdded"/>
+    
+  </div>
 </template>
 
 <script lang="ts">
@@ -17,9 +19,16 @@
     name: 'AddCandidateButton',
     components: { CandidateModal },
     emits: ['added'],
-    setup() {
+    setup(props, { emit }) {
       const showModal = ref(false)
-      return { showModal }
+
+      const emitAdded = (candidate : any) => {
+        emit('added', candidate)
+        showModal.value = false
+      }
+
+
+      return { showModal,emitAdded }
     },
   })
 

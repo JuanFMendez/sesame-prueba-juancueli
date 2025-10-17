@@ -84,10 +84,12 @@ export default {
     ])
 
     // recursividad para resetear active a false de todos los items
-    const resetActive = (items: any[]) => {
+    const resetActiveToFalse = (items: any[]) => {
       items.forEach(item => {
         item.active = false
-        if (item.children) resetActive(item.children)
+        if (item.children) {
+          resetActiveToFalse(item.children)
+        }
       })
     }
 
@@ -95,7 +97,7 @@ export default {
     const selectItem = (nivel3: any) => {
 
       // antes de marcar como activo desmarcamos todos los demas
-      resetActive(menu.value)
+      resetActiveToFalse(menu.value)
       
       nivel3.active = true
       console.debug('elemento nivel 3 seleccionado:', nivel3.title)

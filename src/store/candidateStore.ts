@@ -9,14 +9,14 @@ export const useCandidateStore = defineStore('candidateStore', {
 
   actions: {
 
-    // Recuperar candidatos de una vacante siempre actualizando
+    // Recuperar candidatos de una vacante y guardamos en store
     async getCandidatesByVacancyId(vacancyId: string) {
       console.debug("getCandidatesByVacancyId - Recuperando candidatos para la vacante", vacancyId)
       const candidateService = new CandidateService()
       this.candidatesAll = await candidateService.getCandidatesByVacancyId(vacancyId)
     },
 
-    // Agregar un nuevo candidato a una vacante
+    // Agregar un nuevo candidato a una vacante y agregamos al store
     async addCandidateToVacancy(candidateData: Partial<Candidate>): Promise<Candidate> {
       console.debug("addCandidateToVacancy - Creando candidato para la vacante", candidateData.vacancyId)
       const candidateService = new CandidateService()
@@ -33,13 +33,20 @@ export const useCandidateStore = defineStore('candidateStore', {
       return candidate
     },
 
-    // Actualizar un candidato
+    //actualizamos candidato y agregamos el cambio al store
     async updateCandidate(candidateId: string, candidateData: Partial<Candidate>): Promise<Candidate> {
-      console.debug("getCandidateById - Recuperando un candidato", candidateId )
+      console.debug("updateCandidate - Actualizando un candidato", candidateId )
       const candidateService = new CandidateService()
       const updatedCandidate = await candidateService.updateCandidate(candidateId, candidateData)
+
+      const index = this.candidatesAll.findIndex(c => c.id === candidateId)
+      if (index !== -1) {
+        this.candidatesAll[index] = updatedCandidate
+      }
+
       return updatedCandidate
     }
+
 
   },
 

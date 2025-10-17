@@ -14,10 +14,10 @@
     <AlertMessage v-if="alerta.visible" :message="alerta.message" @close="alerta.cerrar()" />
 
     <!-- Contenedor principal de displays -->
-    <div class="flex-1 rounded-lg overflow-auto w-full flex flex-col"> <!-- flex-col para que hijos con h-full funcionen -->
+    <div class="flex-1 rounded-lg overflow-auto w-full flex flex-col"> 
       <div class="flex-1 w-full"> 
-        <TableDisplayVacantes v-if="activeSection === 'vacantes'" :textoFiltro="searchText" />
-        <TableDisplayCandidatos v-else-if="activeSection === 'candidatos'" :textoFiltro="searchText" @updated="onCandidateUpdated" class="h-full" />
+        <TableDisplayVacantes v-if="activeSection === 'vacantes'" :textoFiltro="searchText" @updated="onCandidateUpdated"  />
+        <TableDisplayCandidatos v-else-if="activeSection === 'candidatos'" :textoFiltro="searchText" @updated="onCandidateUpdated"  />
       </div>
     </div>
 
@@ -82,15 +82,7 @@
         alerta.cerrar()
       })
 
-      return {
-        activeSection,
-        searchText,
-        alerta,
-        emitSeccionSeleccionada,
-        emitBusqueda,
-        onCandidateAdded,
-        onCandidateUpdated
-      }
+      return { activeSection, searchText, alerta, emitSeccionSeleccionada, emitBusqueda, onCandidateAdded, onCandidateUpdated }
     }
   })
 </script>
