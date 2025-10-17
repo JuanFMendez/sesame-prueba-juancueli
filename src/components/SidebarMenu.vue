@@ -58,12 +58,13 @@
 import { ref } from 'vue'
 import { ChevronDown, Star } from 'lucide-vue-next'
 import logo from '../assets/logo-sesame.png'
+import type { MenuItem } from '../domain/entities/MenuItem'
 
 export default {
   name: 'SidebarMenu',
   components: { ChevronDown, Star },
   emits: ['selectItem'],
-  setup(props, context) {
+  setup(props, { emit }) {
 
     // generamos menu dinamico
     const menu = ref([
@@ -76,7 +77,7 @@ export default {
             icon: Star,
             open: true,
             children: [
-               { title: 'Reclutamiento', active: true } // nivel 3
+               { title: 'Reclutamiento', active: true } // nivel 3               
             ]
           }
         ]
@@ -84,7 +85,7 @@ export default {
     ])
 
     // recursividad para resetear active a false de todos los items
-    const resetActiveToFalse = (items: any[]) => {
+    const resetActiveToFalse = (items: MenuItem[]) => {
       items.forEach(item => {
         item.active = false
         if (item.children) {
@@ -94,14 +95,15 @@ export default {
     }
 
     // seleccionamos item y devolvemos el titulo seleccionado
-    const selectItem = (nivel3: any) => {
+    const selectItem = (nivel3: MenuItem) => {
 
       // antes de marcar como activo desmarcamos todos los demas
       resetActiveToFalse(menu.value)
       
       nivel3.active = true
       console.debug('elemento nivel 3 seleccionado:', nivel3.title)
-      context.emit('selectItem', nivel3.title)
+      emit('selectItem', nivel3.title)
+
     }
 
     return { logo, menu, selectItem }
