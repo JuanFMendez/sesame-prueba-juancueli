@@ -3,13 +3,15 @@
     <div class="flex h-full gap-4 w-full">
 
       <!-- recorremos los distintos estados de candidatos -->
+      <!-- v2, permitimos que los estados sea dropeables, recuperamos el estado donde se suelta el candidato -->
       <div v-for="(status, index) in vacancyCandidateStatuses" :key="status.id"
         class="flex-1 h-full border border-gray-200 rounded-2xl shadow-lg flex flex-col p-4"
+        @dragover.prevent @drop="soltarCandidato($event, status.id)"  
       >
         <!-- barra de color según el estado -->
         <div :class="[bgColors[index], 'h-1 w-full rounded-full mb-2']"></div>
 
-        <!-- Icono y nombre del estado -->
+        <!-- icono y nombre del estado -->
         <div class="flex items-center gap-2 mb-2">
           <component :is="icons[index]" class="w-5 h-5" :class="colors[index]" />
           <span class="font-semibold">{{ status.name }}</span>
@@ -22,7 +24,11 @@
           <template v-if="filteredCandidates(status.id).length > 0">
 
             <!-- renderizamos cada candidato filtrado por su estado -->
-            <CandidateCard v-for="candidate in filteredCandidates(status.id)" :key="candidate.id" :candidate="candidate" @updated="refreshAllCandidates" class="mt-3" />
+            <!-- v2, permitimos que sea dragable , recuperamos el candidato arrastrado-->
+            <CandidateCard v-for="candidate in filteredCandidates(status.id)" :key="candidate.id" :candidate="candidate" 
+              @updated="refreshAllCandidates" class="mt-3"
+              draggable="true" @dragstart="arrastrarCandidato($event, candidate)"  
+            />
 
           </template>
 
@@ -132,13 +138,68 @@
         return candidatesFilteredByText.value.filter(c => c.statusId === statusId)
       }
 
+
+      /**
+       * --------------------------
+       * DRAG & DROP
+       * --------------------------
+       */
+
+        //candidato que se seleccionara a mover
+        const dragCandidate = ref<Candidate | null>(null)
+
+        // al mover el candidato se dispara arrastrarCandidato
+        const arrastrarCandidato = (event: DragEvent, candidate: Candidate) => {
+          dragCandidate.value = candidate
+          //efecto permitido de mover 
+          event.dataTransfer!.effectAllowed = 'move'
+        }
+
+        // se dispara al soltar sobre una columna de estado
+        const soltarCandidato = async (event: DragEvent, newStatusId: string) => {
+          
+          //IMPORTATE , permite realizar el drop
+          event.preventDefault()
+
+          //control de null
+          if (!dragCandidate.value){
+            return
+          } 
+
+          if(dragCandidate.value.statusId === newStatusId){
+            console.debug("Candidato arrastrado a su mismo estado, no realizamos operacion")
+            return 
+          }
+
+          //generamos una copa del candidato con todos sus datos y el status modificado
+          const candidateModificado = { ...dragCandidate.value, statusId: newStatusId };
+
+          await loaderStore.loadWithSpinner((async () => {
+            //actualizamos candidato
+            await candidateStore.updateCandidate(dragCandidate.value!.id, candidateModificado )
+            //recuperamos toda la lista
+            await refreshAllCandidates()
+            //limpiamos candidato arrastrado
+            dragCandidate.value = null
+          })())
+          
+        } 
+
+      /**
+       * --------------------------
+       * DRAG & DROP
+       * --------------------------
+       */
+
       //cargamos inicialmente estados y candidatos 
       onMounted(async () => {
         await getCandidateStatuses()
         await getCandidatesByVacancyId()
       })
 
-      return { vacancyCandidateStatuses, icons, colors, bgColors, filteredCandidates, refreshAllCandidates }
+      return { 
+        vacancyCandidateStatuses, icons, colors, bgColors, filteredCandidates, refreshAllCandidates, arrastrarCandidato, soltarCandidato
+      }
     }
 
   })
