@@ -48,6 +48,7 @@
   import type { Candidate } from '../domain/entities/Candidate'
   import CandidateModal from '../components/gestion-candidatos/addCandidate/CandidateModal.vue'
   import { formatearFecha } from '../utils/dateUtil'
+  import { truncarYCapitalizarNombre } from '../utils/stringUtil'
 
   export default defineComponent({
     name: 'CandidateCard',
@@ -72,8 +73,9 @@
       //nombre truncado para maximo 23 caracteres y ...
       const nombreTruncado = computed(() => {
         const nombreCompleto = `${props.candidate.firstName} ${props.candidate.lastName}`
-        return nombreCompleto.length > 23 ? nombreCompleto.slice(0, 23) + '…' : nombreCompleto
+        return truncarYCapitalizarNombre(nombreCompleto, 23)
       })
+
 
       //seleccionamos el candidato y abrimos modal
       const abrirModalEdicion = (candidate: Candidate) => {

@@ -51,7 +51,7 @@
   import CandidateCard from '../CandidateCard.vue'
   import { useCandidateStore } from '../../store/candidateStore'
   import { useLoaderStore } from '../../store/loaderStore'
-  import { VacancyService } from '../../domain/services/VacancyService'
+  import { VacancyService } from '../../infra/services/VacancyService'
   import type { CandidateStatus } from '../../domain/entities/CandidateStatus'
   import type { Candidate } from '../../domain/entities/Candidate'
   import { Archive, User, PartyPopper, Ban } from 'lucide-vue-next'

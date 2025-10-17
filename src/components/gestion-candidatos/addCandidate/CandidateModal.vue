@@ -82,7 +82,7 @@
 <script lang="ts">
   import { defineComponent, reactive, ref, computed, onMounted } from 'vue'
   import { useCandidateStore } from '../../../store/candidateStore'
-  import { VacancyService } from '../../../domain/services/VacancyService'
+  import { VacancyService } from '../../../infra/services/VacancyService'
   import type { Candidate } from '../../../domain/entities/Candidate'
   import type { CandidateStatus } from '../../../domain/entities/CandidateStatus'
   import { useLoaderStore } from '../../../store/loaderStore'
@@ -205,6 +205,14 @@
         await loaderStore.loadWithSpinner(
           (async () => {
             try {
+
+              // Limpiar campos de texto de espacios en blanco
+              candidate.firstName = candidate.firstName.trim()
+              candidate.lastName = candidate.lastName.trim()
+              candidate.email = candidate.email.trim()
+              candidate.phone = candidate.phone.trim()
+              candidate.address = candidate.address?.trim() || ''
+              candidate.comment = candidate.comment?.trim() || ''
 
               // Si el candidato tiene id, se actualiza.
               if (candidate.id) {

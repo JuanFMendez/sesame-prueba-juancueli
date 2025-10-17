@@ -1,11 +1,11 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useCandidateStore } from '../../store/candidateStore'
-import { CandidateService } from '../../domain/services/CandidateService'
+import { CandidateService } from '../../infra/services/CandidateService'
 import type { Candidate } from '../../domain/entities/Candidate'
 
 // Mock del servicio
-vi.mock('../../domain/services/CandidateService')
+vi.mock('../../infra/services/CandidateService')
 
 // Helper para crear candidatos de prueba
 function createMockCandidate(overrides: Partial<Candidate> = {}): Candidate {

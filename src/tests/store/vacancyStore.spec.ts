@@ -3,7 +3,7 @@ import { useVacancyStore } from '../../store/vacancyStore'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 // Mock completo del VacancyService
-vi.mock('../../domain/services/VacancyService', () => {
+vi.mock('../../infra/services/VacancyService', () => {
   return {
     VacancyService: vi.fn().mockImplementation(() => ({
       getAllVacancies: vi.fn().mockResolvedValue([

@@ -1,6 +1,6 @@
-import type { Vacancy } from '../entities/Vacancy'
-import { axiosInstance } from './axiosInstance'
-import type { CandidateStatus } from '../entities/CandidateStatus'
+import type { Vacancy } from '../../domain/entities/Vacancy'
+import { axiosInstance } from '../../infra/axiosInstance'
+import type { CandidateStatus } from '../../domain/entities/CandidateStatus'
 
 export class VacancyService {
 

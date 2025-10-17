@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { CandidateService } from '../domain/services/CandidateService'
+import { CandidateService } from '../infra/services/CandidateService'
 import type { Candidate } from '../domain/entities/Candidate'
 
 export const useCandidateStore = defineStore('candidateStore', {

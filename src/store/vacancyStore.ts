@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { VacancyService } from '../domain/services/VacancyService'
+import { VacancyService } from '../infra/services/VacancyService'
 import type { Vacancy } from '../domain/entities/Vacancy';
 
 export const useVacancyStore = defineStore('vacancyStore', {

@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import TableDisplayVacantes from '../../../components/gestion-candidatos/TableDisplayVacantes.vue'
 import { useCandidateStore } from '../../../store/candidateStore'
 import { useLoaderStore } from '../../../store/loaderStore'
-import { VacancyService } from '../../../domain/services/VacancyService'
+import { VacancyService } from '../../../infra/services/VacancyService'
 
 // Mock de los stores y del servicio
 vi.mock('../../../store/candidateStore', () => ({
@@ -14,7 +14,7 @@ vi.mock('../../../store/loaderStore', () => ({
   useLoaderStore: vi.fn()
 }))
 
-vi.mock('../../../domain/services/VacancyService', () => ({
+vi.mock('../../../infra/services/VacancyService', () => ({
   VacancyService: vi.fn()
 }))
 

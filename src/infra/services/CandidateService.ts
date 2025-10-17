@@ -1,5 +1,5 @@
-import { axiosInstance } from './axiosInstance'
-import type { Candidate } from '../entities/Candidate'
+import { axiosInstance } from '../../infra/axiosInstance'
+import type { Candidate } from '../../domain/entities/Candidate'
 
 export class CandidateService {
 

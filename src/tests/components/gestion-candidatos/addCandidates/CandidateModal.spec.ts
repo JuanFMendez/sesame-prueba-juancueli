@@ -5,7 +5,7 @@ import CandidateModal from '../../../../components/gestion-candidatos/addCandida
 import type { CandidateStatus } from '../../../../domain/entities/CandidateStatus'
 
 // Mock del servicio VacancyService
-vi.mock('../../../../domain/services/VacancyService', () => ({
+vi.mock('../../../../infra/services/VacancyService', () => ({
   VacancyService: vi.fn().mockImplementation(() => ({
     getCandidateStatuses: vi.fn().mockResolvedValue([
       { id: '1', name: 'Seleccionado', order: 1, companyId: 'empresa-1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), vacancyId: 'A' }
