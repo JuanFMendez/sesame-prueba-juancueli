@@ -8,10 +8,10 @@
         <thead class="bg-gray-200">
 
           <tr class="select-none">
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Nombre</th>
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Apellido</th>
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Email</th>
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold">Estado</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Nombre</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Apellido</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Email</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Estado</th>
             <th class="px-4 py-3 text-right text-lg text-lila font-bold w-36"></th>
           </tr>
 
@@ -32,7 +32,7 @@
             </td>
             <td class="px-4 py-3 w-36">
               <div class="flex justify-end gap-2">
-                <button @click="openEditarCandidato(candidato)" class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm">
+                <button @click="openEditarCandidato(candidato)" class="font-especifico-ligth btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm">
                   Editar
                 </button>                
               </div>              

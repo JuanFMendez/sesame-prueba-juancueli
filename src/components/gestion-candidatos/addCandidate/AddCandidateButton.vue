@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm" @click="showModal = true">
+    <button class="font-especifico-ligth  btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm" @click="showModal = true">
       Añadir candidato
     </button>
     

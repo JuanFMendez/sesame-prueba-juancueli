@@ -79,8 +79,8 @@
 
       // iconos y colores de cada estado
       const icons = [Archive, User, PartyPopper, Ban]
-      const colors = ['text-green-500', 'text-teal-400', 'text-blue-500', 'text-red-500']
-      const bgColors = ['bg-green-500', 'bg-teal-400', 'bg-blue-500', 'bg-red-500']
+      const colors = ['text-green-500', 'text-teal-500', 'text-blue-500', 'text-red-400'];
+      const bgColors = ['bg-green-500', 'bg-teal-500', 'bg-blue-500', 'bg-red-400'];
 
       // funcion para recuperar los estados de candidatos
       const getCandidateStatuses = async () => {

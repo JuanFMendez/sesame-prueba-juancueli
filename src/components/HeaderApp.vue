@@ -4,8 +4,8 @@
   <header class="w-full px-4 py-2 bg-gray-100 flex justify-between items-center">
     
     <!-- titulo de la seccion-->
-    <h1 class="text-3xl text-azulOscuro font-bold">
-      {{ titulo }}  
+    <h1 class="text-3xl text-azulOscuro font-bold font-especifico">
+      {{ titulo }} 
     </h1>
 
     <!-- imagen de perfil en la parte derecha -->

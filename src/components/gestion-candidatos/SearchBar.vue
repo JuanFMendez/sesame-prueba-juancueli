@@ -8,9 +8,16 @@
     </span>
 
     <!-- texto a buscar -->
-    <input type="text" placeholder="Buscar" class="input-buscar pl-10 pr-8 py-1.5 text-sm w-full rounded-xl border focus:outline-none focus:ring-0"
-      v-model="searchText" @input="emitSearch" maxlength="25" :title="tooltipText"
-    />
+<input
+  type="text"
+  placeholder="Buscar"
+  class="font-especifico-ligth input-buscar pl-10 pr-8 py-1.5 text-sm w-65 rounded-xl border focus:outline-none focus:ring-0"
+  v-model="searchText"
+  @input="emitSearch"
+  maxlength="25"
+  :title="tooltipText"
+/>
+
 
     <!-- boton x por libreria  -->
     <XIcon v-if="searchText" class="absolute top-1/2 right-3 w-4 h-4 text-gray-400 cursor-pointer transform -translate-y-1/2 hover:text-gray-600"

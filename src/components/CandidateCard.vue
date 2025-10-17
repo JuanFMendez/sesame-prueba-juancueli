@@ -4,7 +4,7 @@
     <div class="flex justify-between items-start">
 
       <!-- nombre limitado para los ... -->
-      <h2 class="text-base font-semibold text-black">{{ nombreTruncado }}</h2>
+      <h1 class="font-especifico2 font-bold text-azulOscuro">{{ nombreTruncado }}</h1>
 
       <!-- seleccionamos contenedor como menu expandido para poder cerrar si clickan fuera-->
       <div class="relative" ref="menuExpandido">
@@ -73,7 +73,7 @@
       //nombre truncado para maximo 23 caracteres y ...
       const nombreTruncado = computed(() => {
         const nombreCompleto = `${props.candidate.firstName} ${props.candidate.lastName}`
-        return truncarYCapitalizarNombre(nombreCompleto, 23)
+        return truncarYCapitalizarNombre(nombreCompleto, 22)
       })
 
 

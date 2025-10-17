@@ -4,6 +4,24 @@ body {
   font-family: 'sans-serif', 
 }
 
+.font-especifico {
+  font-family: 'Poppins';
+  font-weight: 700; 
+  font-style: normal; 
+}
+
+.font-especifico-ligth {
+  font-family: 'Poppins';
+  font-weight: 400; 
+  font-style: normal; 
+}
+
+.font-especifico2 {
+  font-family: 'Poppins';
+  font-weight: 500; 
+  font-style: normal;
+}
+
 .text-lila {
   color: #6C63FF;
   border-color: #6C63FF;

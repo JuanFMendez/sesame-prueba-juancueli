@@ -12,7 +12,7 @@
       <!-- nivel 1  -->
       <div v-for="(nivel1, i) in menu" :key="i" class="space-y-1">
 
-        <div class="flex justify-between items-center cursor-pointer mb-1 text-gray-600 select-none"
+        <div class="flex justify-between items-center cursor-pointer mb-1 text-gray-600 select-none text-base"
           @click="nivel1.open = !nivel1.open"
         >
           <!-- titulo nivel 1-->
@@ -25,7 +25,7 @@
 
           <div v-for="(nivel2, j) in nivel1.children" :key="j">
             
-            <div class="flex justify-between items-center cursor-pointer text-lila font-normal select-none"
+            <div class="flex justify-between items-center cursor-pointer text-lila font-normal select-none text-base"
               @click="nivel2.open = !nivel2.open"
             >
               <!-- titulo nivel 2 -->
@@ -38,7 +38,7 @@
 
             <!-- nivel 3 -->
             <div v-if="nivel2.open" v-for="(nivel3, k) in nivel2.children" :key="k"
-              class="cursor-pointer font-bold py-2 pl-4 text-lila select-none"
+              class="cursor-pointer font-bold py-2 pl-4 text-lila select-none text-base"
               :class="nivel3.active ? 'border-l-2 border-lila ml-1' : ''"
               @click="selectItem(nivel3)"
             >
