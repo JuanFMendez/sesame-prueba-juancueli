@@ -1,7 +1,5 @@
 <template>
-
   <div class="relative w-56">
-
     <!-- lupa por libreria -->
     <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
       <Search class="w-4 h-4 text-gray-400" />
@@ -11,19 +9,19 @@
     <input
       type="text"
       :placeholder="t('search.placeholder')"
-      class="font-especifico-ligth input-buscar pl-10 pr-8 py-1.5 text-sm w-65 rounded-xl border focus:outline-none focus:ring-0"
+      class="font-especifico-ligth input-buscar pl-10 pr-10 py-1.5 text-sm w-60 rounded-xl border focus:outline-none focus:ring-0"
       v-model="searchText"
       @input="emitSearch"
-      maxlength="25"
+      maxlength="23"
       :title="tooltipText"
     />
 
-    <!-- boton x por libreria  -->
-    <XIcon v-if="searchText" class="absolute top-1/2 right-3 w-4 h-4 text-gray-400 cursor-pointer transform -translate-y-1/2 hover:text-gray-600"
+    <!-- boton x por libreria -->
+    <XIcon v-if="searchText" class="absolute top-1/2 right-0 w-4 h-4 text-gray-400 cursor-pointer transform -translate-y-1/2 hover:text-gray-600"
       @click="clearText"
     />
-  </div>
 
+  </div>
 </template>
 
 <script lang="ts">
