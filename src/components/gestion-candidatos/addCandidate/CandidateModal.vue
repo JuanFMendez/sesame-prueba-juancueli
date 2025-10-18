@@ -6,7 +6,7 @@
 
       <!-- Header -->
       <div class="flex justify-between items-center w-full px-4 py-4 bg-gray-100 rounded-t-xl">
-        <h2 class="text-3xl text-azulOscuro font-bold">{{ modalTitle }}</h2>
+        <h2 class="font-especifico text-3xl text-azulOscuro">{{ modalTitle }}</h2>
         <button @click="closeModal" class="text-gray-500 hover:text-gray-800 text-xl font-bold flex items-center justify-center w-10 h-10 button-focus">
           ✕
         </button>

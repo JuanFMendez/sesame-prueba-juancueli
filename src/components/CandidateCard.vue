@@ -4,7 +4,7 @@
     <div class="flex justify-between items-start">
 
       <!-- nombre limitado para los ... -->
-      <h1 class="font-especifico2 font-bold text-azulOscuro">{{ nombreTruncado }}</h1>
+      <h1 class="font-especifico-medium text-azulOscuro">{{ nombreTruncado }}</h1>
 
       <!-- seleccionamos contenedor como menu expandido para poder cerrar si clickan fuera-->
       <div class="relative" ref="menuExpandido">
