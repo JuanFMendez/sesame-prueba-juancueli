@@ -21,11 +21,11 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-normal mb-1 text-lila">Nombre <span class="text-red-500">*</span></label>
-            <input v-model="candidate.firstName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required minlength="2" maxlength="30" pattern="^[A-Za-z\s]+$" />
+            <input v-model="candidate.firstName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required minlength="2" maxlength="30" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$" />
           </div>
           <div>
             <label class="block text-sm font-normal mb-1 text-lila">Apellido <span class="text-red-500">*</span></label>
-            <input v-model="candidate.lastName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required minlength="2" maxlength="30" pattern="^[A-Za-z\s]+$" />
+            <input v-model="candidate.lastName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required minlength="2" maxlength="30" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$" />
           </div>
         </div>
 
