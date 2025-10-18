@@ -1,12 +1,29 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect } from 'vitest'
 import TabsDisplay from '../../../components/gestion-candidatos/TabsDisplay.vue'
+import { createI18n } from 'vue-i18n'
+
+// Configuración mínima de i18n para los tests
+const i18n = createI18n({
+  legacy: false,
+  locale: 'es',
+  messages: {
+    es: {
+      tabs: {
+        vacancies: 'Vacantes',
+        candidates: 'Candidatos'
+      }
+    }
+  }
+})
 
 describe('TabsDisplay.vue', () => {
 
   // 1 Renderiza correctamente las dos pestañas
   it('muestra las pestañas "Vacantes" y "Candidatos"', () => {
-    const wrapper = mount(TabsDisplay)
+    const wrapper = mount(TabsDisplay, {
+      global: { plugins: [i18n] }
+    })
     const buttons = wrapper.findAll('button')
 
     expect(buttons.length).toBe(2)
@@ -16,7 +33,9 @@ describe('TabsDisplay.vue', () => {
 
   // 2 "Vacantes" está activa por defecto
   it('activa la pestaña "Vacantes" al inicio', () => {
-    const wrapper = mount(TabsDisplay)
+    const wrapper = mount(TabsDisplay, {
+      global: { plugins: [i18n] }
+    })
     const buttons = wrapper.findAll('button')
     const vacantesButton = buttons[0]
 
@@ -25,7 +44,9 @@ describe('TabsDisplay.vue', () => {
 
   // 3 Cambia a "Candidatos" al hacer clic
   it('activa "Candidatos" al hacer clic', async () => {
-    const wrapper = mount(TabsDisplay)
+    const wrapper = mount(TabsDisplay, {
+      global: { plugins: [i18n] }
+    })
     const buttons = wrapper.findAll('button')
     const candidatosButton = buttons[1]
 
@@ -37,7 +58,9 @@ describe('TabsDisplay.vue', () => {
 
   // 4 Emite el evento con la pestaña seleccionada
   it('emite el evento con el nombre de la pestaña seleccionada', async () => {
-    const wrapper = mount(TabsDisplay)
+    const wrapper = mount(TabsDisplay, {
+      global: { plugins: [i18n] }
+    })
     const buttons = wrapper.findAll('button')
     const candidatosButton = buttons[1]
 

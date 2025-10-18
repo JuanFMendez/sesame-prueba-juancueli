@@ -4,6 +4,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCandidateStore } from '../../../store/candidateStore'
 import { useLoaderStore } from '../../../store/loaderStore'
+import { createI18n } from 'vue-i18n'
 
 // Mock de CandidateModal para no renderizarlo realmente
 vi.mock('../../../components/gestion-candidatos/addCandidate/CandidateModal.vue', () => ({
@@ -14,11 +15,31 @@ vi.mock('../../../components/gestion-candidatos/addCandidate/CandidateModal.vue'
   }
 }))
 
+// Configuración mínima de i18n para los tests
+const i18n = createI18n({
+  legacy: false,
+  locale: 'es',
+  messages: {
+    es: {
+      label: {
+        firstName: 'Nombre',
+        lastName: 'Apellido',
+        email: 'Correo',
+        status: 'Estado'
+      },
+      btn: {
+        editCorto: 'Editar'
+      }
+    }
+  }
+})
+
 describe('CandidateTable.vue', () => {
   let wrapper: any
   let candidateStore: ReturnType<typeof useCandidateStore>
   let loaderStore: ReturnType<typeof useLoaderStore>
 
+  // Mock de candidatos
   const mockCandidates = [
     { id: '1', firstName: 'Juan', lastName: 'Pérez', email: 'juan@test.com', status: { name: 'Seleccionado' } },
     { id: '2', firstName: 'Ana', lastName: 'García', email: 'ana@test.com', status: { name: 'Pendiente' } }
@@ -35,9 +56,10 @@ describe('CandidateTable.vue', () => {
       candidateStore.$patch({ candidatesAll: mockCandidates }) // ⚡ Usar $patch mantiene reactividad
     })
 
-    // Montamos el componente con el mock del modal
+    // Montamos el componente con el mock del modal y i18n
     wrapper = mount(CandidateTable, {
       global: {
+        plugins: [i18n],
         stubs: { CandidateModal: true }
       }
     })
@@ -82,14 +104,11 @@ describe('CandidateTable.vue', () => {
   // Test 5: refreshCandidates actualiza lista y emite evento
   it('refreshCandidates actualiza candidatos y emite evento', async () => {
     await wrapper.vm.refreshCandidates()
-
     // Verifica que la lista se actualizó
     expect(wrapper.vm.candidates).toEqual(mockCandidates)
-
     // Verifica que el evento 'updated' se emitió con true
     expect(wrapper.emitted('updated')).toBeTruthy()
     expect(wrapper.emitted('updated')![0]).toEqual([true])
-
     // Verifica que se cerró el modal
     expect(wrapper.vm.showCandidateModal).toBe(false)
   })

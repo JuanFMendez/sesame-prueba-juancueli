@@ -7,6 +7,13 @@ vi.mock('../../assets/logo-perfil.png', () => ({
   default: 'mocked-logo-path.png'
 }))
 
+// Mock de LanguageSelect para evitar uso de vue-i18n
+vi.mock('../../components/LanguageSelect.vue', () => ({
+  default: {
+    template: '<div class="language-select-mock"></div>'
+  }
+}))
+
 describe('HeaderApp.vue', () => {
 
   // Test 1: Renderiza el título recibido por props

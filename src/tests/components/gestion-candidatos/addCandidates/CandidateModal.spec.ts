@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+import { createI18n } from 'vue-i18n'
 import CandidateModal from '../../../../components/gestion-candidatos/addCandidate/CandidateModal.vue'
 import type { CandidateStatus } from '../../../../domain/entities/CandidateStatus'
 
@@ -14,14 +15,12 @@ vi.mock('../../../../infra/services/VacancyService', () => ({
 }))
 
 // Mock del candidateStore
-vi.mock('../../../../store/candidateStore', () => {
-  return {
-    useCandidateStore: vi.fn(() => ({
-      addCandidateToVacancy: vi.fn().mockResolvedValue(true),
-      updateCandidate: vi.fn().mockResolvedValue(true)
-    }))
-  }
-})
+vi.mock('../../../../store/candidateStore', () => ({
+  useCandidateStore: vi.fn(() => ({
+    addCandidateToVacancy: vi.fn().mockResolvedValue(true),
+    updateCandidate: vi.fn().mockResolvedValue(true)
+  }))
+}))
 
 describe('CandidateModal - formulario mínimo', () => {
   let pinia: ReturnType<typeof createPinia>
@@ -31,39 +30,37 @@ describe('CandidateModal - formulario mínimo', () => {
     setActivePinia(pinia)
   })
 
-  // Test 1: Enviar formulario con datos mínimos y emitir evento "added"
-  it('envía el formulario rellenando los datos y emite "added"', async () => {
-    // Creamos un array mock de estados de candidato
-    const mockStatuses: CandidateStatus[] = [{
-      id: '1',
-      name: 'Seleccionado',
-      order: 1,
-      companyId: 'empresa-1',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      vacancyId: 'A'
-    }]
+  const i18n = createI18n({
+    legacy: false,
+    locale: 'es',
+    messages: { es: {} }
+  })
 
-    // Montamos el componente con Pinia y datos iniciales
+  it('envía el formulario rellenando los datos y emite "added"', async () => {
+    const mockStatuses: CandidateStatus[] = [
+      { id: '1', name: 'Seleccionado', order: 1, companyId: 'empresa-1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), vacancyId: 'A' }
+    ]
+
     const wrapper = mount(CandidateModal, {
-      global: { plugins: [pinia] },
+      global: { plugins: [pinia, i18n] },
       data() {
         return { vacancyCandidateStatuses: mockStatuses }
       }
     })
 
-    // Rellenamos los campos del formulario directamente
-    wrapper.vm.candidate.firstName = 'Juan'
-    wrapper.vm.candidate.lastName = 'Cueli'
-    wrapper.vm.candidate.email = 'juan@test.com'
-    wrapper.vm.candidate.phone = '123456789'
-    wrapper.vm.candidate.startWorkDate = new Date().toISOString().split('T')[0]!
-    wrapper.vm.candidate.statusId = mockStatuses[0]!.id
+    // Accedemos a candidate con 'as any' para evitar error de TS
+    const vm: any = wrapper.vm
 
-    // Simulamos el envío del formulario
+    vm.candidate.firstName = 'Juan'
+    vm.candidate.lastName = 'Cueli'
+    vm.candidate.email = 'juan@test.com'
+    vm.candidate.phone = '123456789'
+    vm.candidate.startWorkDate = new Date().toISOString().split('T')[0]
+    vm.candidate.statusId = mockStatuses[0]!.id  // assertion para evitar 'undefined'
+
+    // Enviamos el formulario
     await wrapper.find('form').trigger('submit.prevent')
 
-    // Verificamos que se emitió el evento 'added' tras enviar
     expect(wrapper.emitted('added')).toBeTruthy()
   })
 })

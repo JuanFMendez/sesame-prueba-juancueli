@@ -4,6 +4,7 @@ import TableDisplayVacantes from '../../../components/gestion-candidatos/TableDi
 import { useCandidateStore } from '../../../store/candidateStore'
 import { useLoaderStore } from '../../../store/loaderStore'
 import { VacancyService } from '../../../infra/services/VacancyService'
+import { createI18n } from 'vue-i18n'
 
 // Mock de los stores y del servicio
 vi.mock('../../../store/candidateStore', () => ({
@@ -18,6 +19,19 @@ vi.mock('../../../infra/services/VacancyService', () => ({
   VacancyService: vi.fn()
 }))
 
+// Configuración mínima de i18n para los tests
+const i18n = createI18n({
+  legacy: false,
+  locale: 'es',
+  messages: {
+    es: {
+      messages: {
+        noCandidates: 'No hay candidatos'
+      }
+    }
+  }
+})
+
 describe('TableDisplayVacantes', () => {
   let mockCandidateStore: any
   let mockLoaderStore: any
@@ -29,7 +43,8 @@ describe('TableDisplayVacantes', () => {
       getCandidatesByVacancyId: vi.fn().mockResolvedValue([
         { id: '1', firstName: 'Juan', lastName: 'Pérez', email: 'juan@test.com', statusId: 's1' }
       ]),
-      updateCandidate: vi.fn().mockResolvedValue(true)
+      updateCandidate: vi.fn().mockResolvedValue(true),
+      candidatesAll: []
     }
 
     // Mock del loader store que ejecuta callbacks con spinner
@@ -60,7 +75,8 @@ describe('TableDisplayVacantes', () => {
   const mountSafe = async () => {
     const wrapper = mount(TableDisplayVacantes, {
       global: {
-        stubs: ['IconRefresh', 'CandidateCard'] // ignoramos componentes hijos
+        plugins: [i18n],
+        stubs: ['CandidateCard', 'Archive', 'User', 'PartyPopper', 'Ban'] // ignoramos componentes hijos e iconos
       }
     })
     // evitamos error por undefined en propiedades reactivas
