@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full h-screen space-y-4"> 
+<div class="flex flex-col w-full h-screen space-y-4 overflow-hidden">
 
     <!-- pestañas -->
     <TabsDisplay @seccionSelected="emitSeccionSeleccionada" />
