@@ -33,7 +33,7 @@
             <td class="px-4 py-3 w-36">
               <div class="flex justify-end gap-2">
                 <button @click="openEditarCandidato(candidato)" class="font-especifico-ligth btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm">
-                  {{ t('btn.edit') }}
+                  {{ t('btn.editCorto') }}
                 </button>                
               </div>              
             </td>

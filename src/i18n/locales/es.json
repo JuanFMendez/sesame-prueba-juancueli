@@ -22,7 +22,8 @@
     "submitAdd": "Añadir candidato",
     "submitUpdate": "Actualizar candidato",
     "add": "Añadir candidato",
-    "edit": "Editar candidato"
+    "edit": "Editar candidato",
+    "editCorto": "Editar"
   },
   "search": {
     "placeholder": "Buscar",

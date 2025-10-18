@@ -22,7 +22,8 @@
     "submitAdd": "Add candidate",
     "submitUpdate": "Update candidate",
     "add": "Add candidate",
-    "edit": "Edit candidate"
+    "edit": "Edit candidate",
+    "editCorto": "Edit"
   },
   "search": {
     "placeholder": "Search",
