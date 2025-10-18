@@ -26,7 +26,7 @@
             <td class="px-4 py-3">{{ candidato.lastName }}</td>
             <td class="px-4 py-3">{{ candidato.email }}</td>
             <td class="px-4 py-3">
-              <span :class="candidato.status?.name === 'Seleccionado' ? 'text-green-600 font-semibold' : ''">
+              <span :class="getColorByStatus(candidato.status?.name)">
                 {{ candidato.status?.name }}
               </span>
             </td>
@@ -118,7 +118,29 @@
         showCandidateModal.value = true
       }
 
-      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates }
+      // devuelve el color segun el nombre del estado
+      const getColorByStatus = (statusName?: string) => {
+
+        if (!statusName) return ''
+
+        //generamos comparador
+        const normalized = statusName.trim().toLowerCase()
+
+        switch (normalized) {
+          case 'nuevo': 
+            return 'text-green-500 font-semibold '
+          case 'en proceso': 
+            return 'text-teal-500 font-semibold '
+          case 'seleccionado': 
+            return 'text-blue-500 font-semibold '
+          case 'descartado': 
+            return 'text-red-400 font-semibold '
+          default: 
+            return 'text-gray-500 font-semibold '
+        }
+      }
+
+      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates, getColorByStatus }
     },
   })
 
