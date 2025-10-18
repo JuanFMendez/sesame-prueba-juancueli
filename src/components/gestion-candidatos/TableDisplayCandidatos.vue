@@ -52,99 +52,90 @@
   </div>
 </template>
 
-
-<script lang="ts">
-
-  import { defineComponent, ref, onMounted, computed } from 'vue'
+<script setup lang="ts">
+  import { ref, computed, onMounted } from 'vue'
   import { useCandidateStore } from '../../store/candidateStore'
   import CandidateModal from './addCandidate/CandidateModal.vue'
   import type { Candidate } from '../../domain/entities/Candidate'
   import { useLoaderStore } from '../../store/loaderStore'
   import { useI18n } from 'vue-i18n'
 
-  export default defineComponent({
-    components: { CandidateModal },
-    props: {
-      textoFiltro: { type: String, default: '' }
-    },
-    emits: ['updated'],
-    setup(props, { emit }) {
+  const props = defineProps<{ textoFiltro?: string }>()
 
-      const { t } = useI18n()
-      
-      const candidateStore = useCandidateStore()
-      const loaderStore = useLoaderStore()
-      const candidates = ref<Candidate[]>([])
-      const showCandidateModal = ref(false)
-      const candidateToEdit = ref<Candidate | undefined>(undefined)
+  const emit = defineEmits<{
+    (e: 'updated', value: boolean): void
+  }>()
 
-      // recuperamos candidatos de una vacante
-      const getCandidatesByVacancyId = async () => {
-        await loaderStore.loadWithSpinner((async () => {
-          await candidateStore.getCandidatesByVacancyId(import.meta.env.VITE_DEFAULT_VACANCY_ID)
-          candidates.value = candidateStore.candidatesAll
-        })())
-      }
+  const { t } = useI18n()
+        
+  const candidateStore = useCandidateStore()
+  const loaderStore = useLoaderStore()
+  const candidates = ref<Candidate[]>([])
+  const showCandidateModal = ref(false)
+  const candidateToEdit = ref<Candidate | undefined>(undefined)
 
-      // refresco lista y emit
-      const refreshCandidates = async () => {
-        await getCandidatesByVacancyId()
-        emit('updated', true)
-        showCandidateModal.value = false
-      }
+  // recuperamos candidatos de una vacante
+  const getCandidatesByVacancyId = async () => {
+    await loaderStore.loadWithSpinner((async () => {
+      await candidateStore.getCandidatesByVacancyId(import.meta.env.VITE_DEFAULT_VACANCY_ID)
+      candidates.value = candidateStore.candidatesAll
+    })())
+  }
 
-      //cargamos candidatos de la vacante
-      onMounted(async () => { 
-        await getCandidatesByVacancyId() 
-      })
+  // refresco lista y emit
+  const refreshCandidates = async () => {
+    await getCandidatesByVacancyId()
+    emit('updated', true)
+    showCandidateModal.value = false
+  }
 
-      // filtrado por busqueda 
-      const candidatosFiltradosByBusqueda = computed(() => {
-
-        if (!props.textoFiltro){
-          return candidates.value
-        } 
-
-        const filtro = props.textoFiltro.toLowerCase().trim()
-
-        return candidates.value.filter(c =>
-          c.firstName.toLowerCase().includes(filtro) ||
-          c.lastName.toLowerCase().includes(filtro) ||
-          c.email.toLowerCase().includes(filtro) ||
-          c.status?.name.toLowerCase().includes(filtro)
-        )
-      })
-
-      // seleccionamos el candidato que se quiere mostrar y abrimos modal
-      const openEditarCandidato = (candidato: Candidate) => {
-        candidateToEdit.value = candidato
-        showCandidateModal.value = true
-      }
-
-      // devuelve el color segun el nombre del estado
-      const getColorByStatus = (statusName?: string) => {
-
-        if (!statusName) return ''
-
-        //generamos comparador
-        const normalized = statusName.trim().toLowerCase()
-
-        switch (normalized) {
-          case 'nuevo': 
-            return 'text-green-500 font-semibold '
-          case 'en proceso': 
-            return 'text-teal-500 font-semibold '
-          case 'seleccionado': 
-            return 'text-blue-500 font-semibold '
-          case 'descartado': 
-            return 'text-red-400 font-semibold '
-          default: 
-            return 'text-gray-500 font-semibold '
-        }
-      }
-
-      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates, getColorByStatus, t }
-    },
+  //cargamos candidatos de la vacante
+  onMounted(async () => { 
+    await getCandidatesByVacancyId() 
   })
 
+  // filtrado por busqueda 
+  const candidatosFiltradosByBusqueda = computed(() => {
+
+    if (!props.textoFiltro){
+      return candidates.value
+    } 
+
+    const filtro = props.textoFiltro.toLowerCase().trim()
+
+    return candidates.value.filter(c =>
+      c.firstName.toLowerCase().includes(filtro) ||
+      c.lastName.toLowerCase().includes(filtro) ||
+      c.email.toLowerCase().includes(filtro) ||
+      c.status?.name.toLowerCase().includes(filtro)
+    )
+  })
+
+  // seleccionamos el candidato que se quiere mostrar y abrimos modal
+  const openEditarCandidato = (candidato: Candidate) => {
+    candidateToEdit.value = candidato
+    showCandidateModal.value = true
+  }
+
+  // devuelve el color segun el nombre del estado
+  const getColorByStatus = (statusName?: string) => {
+
+    if (!statusName) return ''
+
+    //generamos comparador
+    const normalized = statusName.trim().toLowerCase()
+
+    switch (normalized) {
+      case 'nuevo': 
+        return 'text-green-500 font-semibold '
+      case 'en proceso': 
+        return 'text-teal-500 font-semibold '
+      case 'seleccionado': 
+        return 'text-blue-500 font-semibold '
+      case 'descartado': 
+        return 'text-red-400 font-semibold '
+      default: 
+        return 'text-gray-500 font-semibold '
+    }
+  }
 </script>

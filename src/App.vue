@@ -10,18 +10,11 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+
   import { useLoaderStore } from '../src/store/loaderStore'
   import Loader from './components/Loader.vue'
 
-  export default defineComponent({
-
-    components: { Loader },
-    setup() {
-      const loaderStore = useLoaderStore()
-      return { loaderStore }
-    }
-
-  })
+  const loaderStore = useLoaderStore()
+  
 </script>

@@ -24,48 +24,36 @@
   </div>
 </template>
 
-<script lang="ts">
-
+<script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { Search, XIcon } from 'lucide-vue-next'
   import { useI18n } from 'vue-i18n'
+  import { Search, XIcon } from 'lucide-vue-next'
 
-  export default {
-    name: 'SearchBar',
-    components: { Search, XIcon },
-    props: {
-      seccionActiva: {
-        type: String,
-        required: false,
-        default: 'vacantes'
-      }
-    },
-    emits: ['search'],
-    setup(props, { emit }) {
+  const props = defineProps<{ seccionActiva?: string }>()
 
-      const { t } = useI18n()
+  const emit = defineEmits<{
+    (e: 'search', value: string): void
+  }>()
 
-      const searchText = ref('')
+  const { t } = useI18n()
 
-      //emitir texto busqueda
-      const emitSearch = () => {
-        emit('search', searchText.value)
-      }
+  const searchText = ref('')
 
-      const tooltipText = computed(() => {
+  //emitir texto busqueda
+  const emitSearch = () => {
+    emit('search', searchText.value)
+  }
 
-        //si no es vacantes es candidatos
-        return props.seccionActiva === 'vacantes'
-          ? t('search.vacanciesTooltip')
-          : t('search.candidatesTooltip')
-      })
+  const tooltipText = computed(() => {
 
-      const clearText = () => {
-        searchText.value = ''
-        emitSearch()
-      }
+    //si no es vacantes es candidatos
+    return props.seccionActiva === 'vacantes'
+      ? t('search.vacanciesTooltip')
+      : t('search.candidatesTooltip')
+  })
 
-      return { searchText, emitSearch, clearText, tooltipText, t }
-    }
+  const clearText = () => {
+    searchText.value = ''
+    emitSearch()
   }
 </script>

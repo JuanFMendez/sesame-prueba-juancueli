@@ -25,27 +25,22 @@
 
 </template>
 
-<script lang="ts">
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
-export default {
-  name: 'TabsDisplay',
-  emits: ['seccionSelected'], 
-  setup(props, { emit }) {
+  const emit = defineEmits<{
+    (e: 'seccionSelected', tab: string): void
+  }>()
 
-    const { t } = useI18n()
+  const { t } = useI18n()
 
-    //tab activa por defecto
-    const activeTab = ref('vacantes')
+  //tab activa por defecto
+  const activeTab = ref('vacantes')
 
-    //seleccion de pestania y emitir evento
-    const seccionSelected = (tabSeleccionado: string) => {
-      activeTab.value = tabSeleccionado
-      emit('seccionSelected', tabSeleccionado) 
-    }
-
-    return { activeTab, seccionSelected, t }
+  //seleccion de pestania y emitir evento
+  const seccionSelected = (tabSeleccionado: string) => {
+    activeTab.value = tabSeleccionado
+    emit('seccionSelected', tabSeleccionado) 
   }
-}
 </script>

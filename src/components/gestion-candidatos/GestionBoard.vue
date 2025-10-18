@@ -24,68 +24,52 @@
   </div>
 </template>
 
-<script lang="ts">
-
-  import { defineComponent, ref, reactive, onMounted } from 'vue'
+<script setup lang="ts">
+  import { ref, reactive, onMounted } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import TabsDisplay from './TabsDisplay.vue'
   import SearchBar from './SearchBar.vue'
   import AddCandidateButton from './addCandidate/AddCandidateButton.vue'
   import TableDisplayVacantes from './TableDisplayVacantes.vue'
   import TableDisplayCandidatos from './TableDisplayCandidatos.vue'
-  import { Alerta } from '../../domain/entities/Alerta'
   import AlertMessage from '../AlertMessage.vue'
-  import { useI18n } from 'vue-i18n'
+  import { Alerta } from '../../domain/entities/Alerta'
 
-  export default defineComponent({
-    name: 'GestionBoard',
-    components: {
-      TabsDisplay,
-      SearchBar,
-      AddCandidateButton,
-      TableDisplayVacantes,
-      TableDisplayCandidatos,
-      AlertMessage
-    },
-    setup() {
+  const { t } = useI18n()
 
-      const { t } = useI18n()
+  const activeSection = ref('vacantes')
+  const searchText = ref('')
+  const alerta = reactive(new Alerta(''))
 
-      const activeSection = ref('vacantes')
-      const searchText = ref('')
-      const alerta = reactive(new Alerta(''))
+  // Emite la seccion seleccionada en las pestañas
+  const emitSeccionSeleccionada = (section: string) => {
+    activeSection.value = section
+  }
 
-      // Emite la seccion seleccionada en las pestañas
-      const emitSeccionSeleccionada = (section: string) => {
-        activeSection.value = section
-      }
+  // Emite el texto de busqueda ingresado
+  const emitBusqueda = (text: string) => {
+    searchText.value = text
+  }
 
-      // Emite el texto de busqueda ingresado
-      const emitBusqueda = (text: string) => {
-        searchText.value = text
-      }
+  // Muestra una alerta de exito con el mensaje dado
+  const mostrarAlertaExito = (mensaje: string) => {
+    alerta.message = mensaje
+    alerta.visible = true
+    alerta.tipo = 'success'      
+    setTimeout(() => alerta.cerrar(), 3000)
+  }
 
-      // Muestra una alerta de exito con el mensaje dado
-      const mostrarAlertaExito = (mensaje: string) => {
-        alerta.message = mensaje
-        alerta.visible = true
-        alerta.tipo = 'success'      
-        setTimeout(() => alerta.cerrar(), 3000)
-      }
+  // Maneja la accion de agregar un candidato
+  const onCandidateAdded = (success: boolean) => {
+    if (success) mostrarAlertaExito(t('alert.candidateAdded'))
+  }
 
-      // Maneja la accion de agregar un candidato
-      const onCandidateAdded = (success: boolean) => {
-        if (success) mostrarAlertaExito(t('alert.candidateAdded'))
-      }
-      // Maneja la accion de actualizar un candidato
-      const onCandidateUpdated = (success: boolean) => {
-        if (success) mostrarAlertaExito(t('alert.candidateUpdated'))
-      }
+  // Maneja la accion de actualizar un candidato
+  const onCandidateUpdated = (success: boolean) => {
+    if (success) mostrarAlertaExito(t('alert.candidateUpdated'))
+  }
 
-      onMounted(() => {
-        alerta.cerrar()
-      })
-
-      return { activeSection, searchText, alerta, emitSeccionSeleccionada, emitBusqueda, onCandidateAdded, onCandidateUpdated }
-    }
+  onMounted(() => {
+    alerta.cerrar()
   })
 </script>

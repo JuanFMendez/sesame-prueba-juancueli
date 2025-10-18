@@ -10,30 +10,20 @@
   </div>
 </template>
 
-<script lang="ts">
-
-  import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+  import { ref } from 'vue'
   import CandidateModal from './CandidateModal.vue'
   import { useI18n } from 'vue-i18n'
 
+  const emit = defineEmits<{
+    (e: 'added', candidate: any): void
+  }>()
 
-  export default defineComponent({
-    name: 'AddCandidateButton',
-    components: { CandidateModal },
-    emits: ['added'],
-    setup(props, { emit }) {
-      
-      const showModal = ref(false)
-      const { t } = useI18n()
+  const showModal = ref(false)
+  const { t } = useI18n()
 
-      const emitAdded = (candidate : any) => {
-        emit('added', candidate)
-        showModal.value = false
-      }
-
-
-      return { showModal,emitAdded, t }
-    },
-  })
-
+  const emitAdded = (candidate: any) => {
+    emit('added', candidate)
+    showModal.value = false
+  }
 </script>

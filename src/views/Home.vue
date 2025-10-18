@@ -7,9 +7,9 @@
 
       <!-- Área principal según selección de aside-->
       <div class="flex-1 flex flex-col h-full ml-8 border-r-1 pr-6 border-gray-200" 
-           v-if="seccionSeleccionada === 'recruitment'" >
+           v-if="seccionSeleccionada === 'sidebar.recruitment'" >
         <!-- Cabecera -->
-        <HeaderApp :titulo="t('sidebar.recruitment')"/>
+        <HeaderApp :titulo="t(seccionSeleccionada)"/>
         
         <!-- Contenedor principal -->
         <div class="flex-1 p-6 bg-white rounded-3xl shadow-md flex flex-col overflow-auto space-y-4 mt-2 mb-6 border border-gray-200">          
@@ -21,25 +21,17 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import Sidebar from '../components/SidebarMenu.vue'
 import HeaderApp from '../components/HeaderApp.vue'
 import GestionBoard from '../components/gestion-candidatos/GestionBoard.vue'
-import LanguageSelect from '../components/LanguageSelect.vue'
 
-export default {
-  name: 'Home',
-  components: { Sidebar, HeaderApp, GestionBoard, LanguageSelect },
-  setup() {
-    const { t } = useI18n()
+const { t } = useI18n()
 
-    // valor por defecto porque solo hay una sección actualmente en el aside
-    const seccionSeleccionada = ref('recruitment')
-      
-    return { seccionSeleccionada, t }
-  }
-}
+// valor por defecto porque solo hay una sección actualmente en el aside
+// guardamos la clave, no la traducción
+const seccionSeleccionada = ref('sidebar.recruitment')
 </script>

@@ -54,62 +54,57 @@
   </aside>
 </template>
 
-<script lang="ts">
-import { ref } from 'vue'
-import { ChevronDown, Star } from 'lucide-vue-next'
-import logo from '../assets/logo-sesame.png'
-import type { MenuItem } from '../domain/entities/MenuItem'
-import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import { ChevronDown, Star } from 'lucide-vue-next'
+  import logo from '../assets/logo-sesame.png'
+  import type { MenuItem } from '../domain/entities/MenuItem'
+  import { useI18n } from 'vue-i18n'
 
-export default {
-  name: 'SidebarMenu',
-  components: { ChevronDown, Star },
-  emits: ['selectItem'],
-  setup(props, { emit }) {
+  const { t } = useI18n()
 
-    const { t } = useI18n()
-
-    // generamos menu dinamico
-    const menu = ref([
-      {
-        title: 'sidebar.admin', // nivel 1 (i18n)
-        open: true,
-        children: [
-          {
-            title: 'sidebar.talent', // nivel 2 (i18n)
-            icon: Star,
-            open: true,
-            children: [
-               { title: 'sidebar.recruitment', active: true } // nivel 3 (i18n)             
-            ]
-          }
-        ]
-      }
-    ])
-
-    // recursividad para resetear active a false de todos los items
-    const resetActiveToFalse = (items: MenuItem[]) => {
-      items.forEach(item => {
-        item.active = false
-        if (item.children) {
-          resetActiveToFalse(item.children)
+  // generamos menu dinamico
+  const menu = ref<MenuItem[]>([
+    {
+      title: 'sidebar.admin', // nivel 1 (i18n)
+      open: true,
+      children: [
+        {
+          title: 'sidebar.talent', // nivel 2 (i18n)
+          icon: Star,
+          open: true,
+          children: [
+            { title: 'sidebar.recruitment', active: true } // nivel 3 (i18n)             
+          ]
         }
-      })
+      ]
     }
+  ])
 
-    // seleccionamos item y devolvemos el titulo seleccionado
-    const selectItem = (nivel3: MenuItem) => {
-
-      // antes de marcar como activo desmarcamos todos los demas
-      resetActiveToFalse(menu.value)
-      
-      nivel3.active = true
-      console.debug('elemento nivel 3 seleccionado:', nivel3.title)
-      emit('selectItem', nivel3.title)
-
-    }
-
-    return { logo, menu, selectItem, t }
+  // recursividad para resetear active a false de todos los items
+  const resetActiveToFalse = (items: MenuItem[]) => {
+    items.forEach(item => {
+      item.active = false
+      if (item.children) {
+        resetActiveToFalse(item.children)
+      }
+    })
   }
-}
+
+  // seleccionamos item y devolvemos la clave i18n al padre
+  const emit = defineEmits<{
+    (e: 'selectItem', value: string): void
+  }>()
+
+  const selectItem = (nivel3: MenuItem) => {
+
+    // antes de marcar como activo desmarcamos todos los demas
+    resetActiveToFalse(menu.value)
+    
+    nivel3.active = true
+    console.debug('elemento nivel 3 seleccionado:', nivel3.title)
+
+    // enviamos la clave de i18n al padre
+    emit('selectItem', nivel3.title)
+  }
 </script>

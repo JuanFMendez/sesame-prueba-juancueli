@@ -10,31 +10,19 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+  import { ref } from 'vue'
 
-import { defineComponent, ref } from 'vue'
+  defineProps<{
+    message: string
+    tipo?: string
+  }>()
 
-export default defineComponent({
-  name: 'AlertMessage',
-  props: {
-    message: {
-      type: String,
-      required: true
-    },
-    tipo: {
-      type: String,
-      default: 'success', // por defecto sera verde
-    }
-  },
-  setup() {
-    
-    const visible = ref(true)
+  // control de visibilidad del alert
+  const visible = ref(true)
 
-    const closeAlert = () => {
-      visible.value = false
-    }
-
-    return { visible, closeAlert }
+  // función para cerrar el alert
+  const closeAlert = () => {
+    visible.value = false
   }
-})
 </script>

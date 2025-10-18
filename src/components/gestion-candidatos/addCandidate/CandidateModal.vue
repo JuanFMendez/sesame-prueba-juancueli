@@ -79,156 +79,152 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, ref, computed, onMounted } from 'vue'
-import { useCandidateStore } from '../../../store/candidateStore'
-import { VacancyService } from '../../../infra/services/VacancyService'
-import type { Candidate } from '../../../domain/entities/Candidate'
-import type { CandidateStatus } from '../../../domain/entities/CandidateStatus'
-import { useLoaderStore } from '../../../store/loaderStore'
-import { Alerta } from '../../../domain/entities/Alerta'
-import AlertMessage from '../../AlertMessage.vue'
-import { useI18n } from 'vue-i18n'
+<script setup lang="ts">
+  import { reactive, ref, computed, onMounted } from 'vue'
+  import { useCandidateStore } from '../../../store/candidateStore'
+  import { VacancyService } from '../../../infra/services/VacancyService'
+  import type { Candidate } from '../../../domain/entities/Candidate'
+  import type { CandidateStatus } from '../../../domain/entities/CandidateStatus'
+  import { useLoaderStore } from '../../../store/loaderStore'
+  import { Alerta } from '../../../domain/entities/Alerta'
+  import AlertMessage from '../../AlertMessage.vue'
+  import { useI18n } from 'vue-i18n'
 
-export default defineComponent({
-  name: 'CandidateModal',
-  props: { candidateData: { type: Object as () => Candidate, required: false } },
-  emits: ['close', 'added', 'updated'],
-  components: { AlertMessage },
-  setup(props, { emit }) {
+  const props = defineProps<{
+    candidateData?: Candidate
+  }>()
 
-    const { t } = useI18n()
+  const emit = defineEmits<{
+    (e: 'close'): void
+    (e: 'added', success: boolean): void
+    (e: 'updated', success: boolean): void
+  }>()
 
-    const candidateStore = useCandidateStore()
-    const loaderStore = useLoaderStore()
-    const vacancyService = new VacancyService()
+  const { t } = useI18n()
 
-    const vacancyId = import.meta.env.VITE_DEFAULT_VACANCY_ID
+  const candidateStore = useCandidateStore()
+  const loaderStore = useLoaderStore()
+  const vacancyService = new VacancyService()
+  const vacancyId = import.meta.env.VITE_DEFAULT_VACANCY_ID
 
-    //fecha minima para el calendario
-    const minHoy = new Date().toISOString().split('T')[0] 
+  //fecha minima para el calendario
+  const minHoy = new Date().toISOString().split('T')[0] 
 
-    //titulo del modal
-    const modalTitle = computed(() =>
-      props.candidateData ? t('btn.edit') : t('btn.submitAdd')
-    )
+  //titulo del modal
+  const modalTitle = computed(() =>
+    props.candidateData ? t('btn.edit') : t('btn.submitAdd')
+  )
 
-    //texto boton submit
-    const submitButtonText = computed(() =>
-      props.candidateData?.id ? t('btn.submitUpdate') : t('btn.submitAdd')
-    )
+  //texto boton submit
+  const submitButtonText = computed(() =>
+    props.candidateData?.id ? t('btn.submitUpdate') : t('btn.submitAdd')
+  )
 
-    //alerta para error o accion correcta
-    const alerta = reactive(new Alerta(''))
+  //alerta para error o accion correcta
+  const alerta = reactive(new Alerta(''))
 
-    // Lista de estados de candidato
-    const vacancyCandidateStatuses = ref<CandidateStatus[]>([])
+  // Lista de estados de candidato
+  const vacancyCandidateStatuses = ref<CandidateStatus[]>([])
 
-    // Datos basicos para un candidato nuevo
-    const defaultCandidate: Candidate = {
-      id: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      linkedInURL: '',
-      desiredSalary: '',
-      startWorkDate: '',
-      web: '',
-      location: '',
-      vacancyId,
-      statusId: '',
-      address: '',
-      comment: '',
-      appliedAt: new Date().toISOString(),
-      type: '',
-      hasDocument: false,
-      imageProfileURL: '',
-      evaluation: 0,
-      threadId: '',
-      lastComment: null,
-      numComments: 0,
-      createdAt: '',
-      updatedAt: '',
-      employeeId: '',
-      vacancy: { id: '', name: '', companyId: '', status: '' },
-      status: { id: '', name: '', companyId: '', order: 0 }
-    }
-
-    // candidato reactivo, ya sea nuevo o pasado por props
-    const candidate = reactive<Candidate>({ ...defaultCandidate, ...props.candidateData })
-
-    // Validaciones del formulario 
-    const formIsValid = computed(() =>
-      candidate.firstName.trim() &&
-      candidate.lastName.trim() &&
-      candidate.email.trim() &&
-      candidate.phone.trim() &&
-      candidate.statusId &&
-      candidate.startWorkDate
-    )
-    
-    onMounted(async () => {
-      alerta.cerrar()
-      await loaderStore.loadWithSpinner(
-        (async () => {
-          try {
-            vacancyCandidateStatuses.value = await vacancyService.getCandidateStatuses(vacancyId)
-
-            if (!vacancyCandidateStatuses.value || vacancyCandidateStatuses.value.length === 0) {
-              alerta.message = t('No hay estados de candidato disponibles')
-              alerta.tipo = 'error'
-              alerta.visible = true
-            } else if (!candidate.statusId && vacancyCandidateStatuses.value[0]) {
-              candidate.statusId = vacancyCandidateStatuses.value[0].id
-            }
-
-          } catch (error) {
-            console.error('Error cargando estados del candidato:', error)
-            alerta.message = t('Error cargando estados del candidato')
-            alerta.tipo = 'error'
-            alerta.visible = true              
-          }
-        })()
-      )
-    })
-
-    const submitForm = async () => {
-      await loaderStore.loadWithSpinner(
-        (async () => {
-          try {
-            candidate.firstName = candidate.firstName.trim()
-            candidate.lastName = candidate.lastName.trim()
-            candidate.email = candidate.email.trim()
-            candidate.phone = candidate.phone.trim()
-            candidate.address = candidate.address?.trim() || ''
-            candidate.comment = candidate.comment?.trim() || ''
-
-            if (candidate.id) {
-              await candidateStore.updateCandidate(candidate.id, candidate)
-              emit('updated', true)
-            } else {
-              await candidateStore.addCandidateToVacancy(candidate)
-              emit('added', true)
-            }
-
-            closeModal()
-          } catch (error) {
-            console.error('Error en la gestion del candidato:', error)
-            alerta.message = t('Error en la gestion del candidato')
-            alerta.tipo = 'error'
-            alerta.visible = true              
-          }
-        })()
-      )
-    }
-
-    const closeModal = () => emit('close')
-
-    return { 
-      candidate, vacancyCandidateStatuses, submitForm, closeModal, formIsValid, alerta, modalTitle, submitButtonText, minHoy, t
-    }
-    
+  // Datos basicos para un candidato nuevo
+  const defaultCandidate: Candidate = {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    linkedInURL: '',
+    desiredSalary: '',
+    startWorkDate: '',
+    web: '',
+    location: '',
+    vacancyId,
+    statusId: '',
+    address: '',
+    comment: '',
+    appliedAt: new Date().toISOString(),
+    type: '',
+    hasDocument: false,
+    imageProfileURL: '',
+    evaluation: 0,
+    threadId: '',
+    lastComment: null,
+    numComments: 0,
+    createdAt: '',
+    updatedAt: '',
+    employeeId: '',
+    vacancy: { id: '', name: '', companyId: '', status: '' },
+    status: { id: '', name: '', companyId: '', order: 0 }
   }
-})
+
+  // candidato reactivo, ya sea nuevo o pasado por props
+  const candidate = reactive<Candidate>({ ...defaultCandidate, ...props.candidateData })
+
+  // Validaciones del formulario 
+  const formIsValid = computed(() =>
+    candidate.firstName.trim() &&
+    candidate.lastName.trim() &&
+    candidate.email.trim() &&
+    candidate.phone.trim() &&
+    candidate.statusId &&
+    candidate.startWorkDate
+  )
+
+  onMounted(async () => {
+    alerta.cerrar()
+    await loaderStore.loadWithSpinner(
+      (async () => {
+        try {
+          vacancyCandidateStatuses.value = await vacancyService.getCandidateStatuses(vacancyId)
+
+          if (!vacancyCandidateStatuses.value || vacancyCandidateStatuses.value.length === 0) {
+            alerta.message = t('No hay estados de candidato disponibles')
+            alerta.tipo = 'error'
+            alerta.visible = true
+          } else if (!candidate.statusId && vacancyCandidateStatuses.value[0]) {
+            candidate.statusId = vacancyCandidateStatuses.value[0].id
+          }
+
+        } catch (error) {
+          console.error('Error cargando estados del candidato:', error)
+          alerta.message = t('Error cargando estados del candidato')
+          alerta.tipo = 'error'
+          alerta.visible = true              
+        }
+      })()
+    )
+  })
+
+  const submitForm = async () => {
+    await loaderStore.loadWithSpinner(
+      (async () => {
+        try {
+          candidate.firstName = candidate.firstName.trim()
+          candidate.lastName = candidate.lastName.trim()
+          candidate.email = candidate.email.trim()
+          candidate.phone = candidate.phone.trim()
+          candidate.address = candidate.address?.trim() || ''
+          candidate.comment = candidate.comment?.trim() || ''
+
+          if (candidate.id) {
+            await candidateStore.updateCandidate(candidate.id, candidate)
+            emit('updated', true)
+          } else {
+            await candidateStore.addCandidateToVacancy(candidate)
+            emit('added', true)
+          }
+
+          closeModal()
+        } catch (error) {
+          console.error('Error en la gestion del candidato:', error)
+          alerta.message = t('Error en la gestion del candidato')
+          alerta.tipo
+          alerta.visible = true              
+        }
+      })()
+    )
+  }
+
+  const closeModal = () => emit('close')
+
 </script>

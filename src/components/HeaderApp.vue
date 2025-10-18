@@ -13,11 +13,8 @@
 
 
 <script setup lang="ts">
-import perfilLogo from '../assets/logo-perfil.png'
-import LanguageSelect from '../components/LanguageSelect.vue'
+  import perfilLogo from '../assets/logo-perfil.png'
+  import LanguageSelect from '../components/LanguageSelect.vue'
 
-const props = defineProps<{ titulo: string }>()
-
-
-
+  const props = defineProps<{ titulo: string }>()
 </script>

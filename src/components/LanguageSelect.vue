@@ -25,27 +25,27 @@
 
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { availableLanguages } from '../i18n'
-import VueCountryFlag from 'vue-country-flag-next'
+  import { ref, computed } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import { availableLanguages } from '../i18n'
+  import VueCountryFlag from 'vue-country-flag-next'
 
-const { locale } = useI18n()
-const dropdownOpen = ref(false)
+  const { locale } = useI18n()
+  const dropdownOpen = ref(false)
 
-const selectedFlag = computed(() => {
-  const lang = availableLanguages.find(l => l.code === locale.value)
-  return lang?.flagCountry || 'ES'
-})
+  const selectedFlag = computed(() => {
+    const lang = availableLanguages.find(l => l.code === locale.value)
+    return lang?.flagCountry || 'ES'
+  })
 
-// Filtra los idiomas que no son el seleccionado
-const otherLanguages = computed(() => 
-  availableLanguages.filter(l => l.code !== locale.value)
-)
+  // Filtra los idiomas que no son el seleccionado
+  const otherLanguages = computed(() => 
+    availableLanguages.filter(l => l.code !== locale.value)
+  )
 
-const selectIdioma = (code: string) => {
-  locale.value = code
-  localStorage.setItem('app-locale', code)
-  dropdownOpen.value = false
-}
+  const selectIdioma = (code: string) => {
+    locale.value = code
+    localStorage.setItem('app-locale', code)
+    dropdownOpen.value = false
+  }
 </script>

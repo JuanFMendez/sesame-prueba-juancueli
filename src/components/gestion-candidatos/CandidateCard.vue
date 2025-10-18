@@ -35,9 +35,8 @@
   </div>
 </template>
 
-<script lang="ts">
-
-  import { defineComponent, ref, computed, onMounted } from 'vue'
+<script setup lang="ts">
+  import { ref, computed, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { Clock, MoreVertical } from 'lucide-vue-next'
   import type { Candidate } from '../../domain/entities/Candidate'
@@ -45,52 +44,42 @@
   import { formatearFecha } from '../../utils/dateUtil'
   import { truncarYCapitalizarNombre } from '../../utils/stringUtil'
 
-  export default defineComponent({
-    name: 'CandidateCard',
-    components: { Clock, MoreVertical, CandidateModal },
-    props: {
-      candidate: { type: Object as () => Candidate, required: true }
-    },
-    emits: ['updated'],
-    setup(props, { emit }) {
+  const props = defineProps<{ candidate: Candidate }>()
+  const emit = defineEmits<{
+    (e: 'updated'): void
+  }>()
 
-      const { t } = useI18n()
+  const { t } = useI18n()
 
-      const menuOpen = ref(false)
-      const menuExpandido = ref<HTMLElement | null>(null)
-      const modalVisible = ref(false)
-      const candidatoSeleccionado = ref<Candidate | null>(null)
+  const menuOpen = ref(false)
+  const menuExpandido = ref<HTMLElement | null>(null)
+  const modalVisible = ref(false)
+  const candidatoSeleccionado = ref<Candidate | null>(null)
 
-      const fechaCreacionFormateada = computed(() => formatearFecha(props.candidate.createdAt))
+  const fechaCreacionFormateada = computed(() => formatearFecha(props.candidate.createdAt))
 
-      const nombreTruncado = computed(() => {
-        const nombreCompleto = `${props.candidate.firstName} ${props.candidate.lastName}`
-        return truncarYCapitalizarNombre(nombreCompleto, 22)
-      })
-
-      const abrirModalEdicion = (candidate: Candidate) => {
-        candidatoSeleccionado.value = candidate
-        modalVisible.value = true
-        menuOpen.value = false
-      }
-
-      const clickOutMenu = (event: MouseEvent) => {
-        if (menuExpandido.value && !menuExpandido.value.contains(event.target as Node)) {
-          menuOpen.value = false
-        }
-      }
-
-      const emitUpdated = () => {
-        emit('updated')
-      }
-
-      onMounted(() => {
-        document.addEventListener('click', clickOutMenu)
-      })
-
-      return { menuOpen, menuExpandido, modalVisible, candidatoSeleccionado, fechaCreacionFormateada, nombreTruncado, abrirModalEdicion, emitUpdated, t }
-    }
-
+  const nombreTruncado = computed(() => {
+    const nombreCompleto = `${props.candidate.firstName} ${props.candidate.lastName}`
+    return truncarYCapitalizarNombre(nombreCompleto, 22)
   })
 
+  const abrirModalEdicion = (candidate: Candidate) => {
+    candidatoSeleccionado.value = candidate
+    modalVisible.value = true
+    menuOpen.value = false
+  }
+
+  const clickOutMenu = (event: MouseEvent) => {
+    if (menuExpandido.value && !menuExpandido.value.contains(event.target as Node)) {
+      menuOpen.value = false
+    }
+  }
+
+  const emitUpdated = () => {
+    emit('updated')
+  }
+
+  onMounted(() => {
+    document.addEventListener('click', clickOutMenu)
+  })
 </script>

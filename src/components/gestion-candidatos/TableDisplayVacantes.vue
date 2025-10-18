@@ -45,9 +45,8 @@
   </div>
 </template>
 
-<script lang="ts">
-
-  import { defineComponent, ref, onMounted, computed } from 'vue'
+<script setup lang="ts">
+  import { ref, onMounted, computed } from 'vue'
   import CandidateCard from './CandidateCard.vue'
   import { useCandidateStore } from '../../store/candidateStore'
   import { useLoaderStore } from '../../store/loaderStore'
@@ -57,154 +56,141 @@
   import { Archive, User, PartyPopper, Ban } from 'lucide-vue-next'
   import { useI18n } from 'vue-i18n'
 
-  export default defineComponent({
-    name: 'TableDisplayVacantes',
-    emits: ['updated'],
-    props: {
-      // recibe un texto de filtro desde el componente padre
-      textoFiltro: { type: String, default: '' }
-    },
-    components: {  CandidateCard, Archive, User, PartyPopper, Ban },
-    setup(props, { emit }) {
+  const props = defineProps<{ textoFiltro?: string }>()
 
-      const { t } = useI18n()
-      
-      const loaderStore = useLoaderStore()
-      const vacancyService = new VacancyService()
-      const candidateStore = useCandidateStore()
-      const vacanteIdDefault = import.meta.env.VITE_DEFAULT_VACANCY_ID
+  const emit = defineEmits<{
+    (e: 'updated', value: boolean): void
+  }>()
 
-      // estados de candidatos de la vacante
-      const vacancyCandidateStatuses = ref<CandidateStatus[]>([])
+  const { t } = useI18n()
+        
+  const loaderStore = useLoaderStore()
+  const vacancyService = new VacancyService()
+  const candidateStore = useCandidateStore()
+  const vacanteIdDefault = import.meta.env.VITE_DEFAULT_VACANCY_ID
 
-      // lista completa de candidatos de la vacante
-      const candidates = ref<Candidate[]>([])
+  // estados de candidatos de la vacante
+  const vacancyCandidateStatuses = ref<CandidateStatus[]>([])
 
-      // iconos y colores de cada estado
-      const icons = [Archive, User, PartyPopper, Ban]
-      const colors = ['text-green-500', 'text-teal-500', 'text-blue-500', 'text-red-400'];
-      const bgColors = ['bg-green-500', 'bg-teal-500', 'bg-blue-500', 'bg-red-400'];
+  // lista completa de candidatos de la vacante
+  const candidates = ref<Candidate[]>([])
 
-      // funcion para recuperar los estados de candidatos
-      const getCandidateStatuses = async () => {
-        await loaderStore.loadWithSpinner((async () => {
-          try {
-            vacancyCandidateStatuses.value = await vacancyService.getCandidateStatuses(vacanteIdDefault)
-          } catch (error) {
-            console.error(error)
-          }
-        })())
+  // iconos y colores de cada estado
+  const icons = [Archive, User, PartyPopper, Ban]
+  const colors = ['text-green-500', 'text-teal-500', 'text-blue-500', 'text-red-400']
+  const bgColors = ['bg-green-500', 'bg-teal-500', 'bg-blue-500', 'bg-red-500']
+
+  // funcion para recuperar los estados de candidatos
+  const getCandidateStatuses = async () => {
+    await loaderStore.loadWithSpinner((async () => {
+      try {
+        vacancyCandidateStatuses.value = await vacancyService.getCandidateStatuses(vacanteIdDefault)
+      } catch (error) {
+        console.error(error)
       }
+    })())
+  }
 
-      // funcion para recuperar los candidatos de la vacante
-      const getCandidatesByVacancyId = async () => {
-        await loaderStore.loadWithSpinner((async () => {
-          try {
-            await candidateStore.getCandidatesByVacancyId(vacanteIdDefault)
-            candidates.value = candidateStore.candidatesAll
-          } catch (error) {
-            console.error(error)
-          }
-        })())
+  // funcion para recuperar los candidatos de la vacante
+  const getCandidatesByVacancyId = async () => {
+    await loaderStore.loadWithSpinner((async () => {
+      try {
+        await candidateStore.getCandidatesByVacancyId(vacanteIdDefault)
+        candidates.value = candidateStore.candidatesAll
+      } catch (error) {
+        console.error(error)
       }
+    })())
+  }
 
-      // funcion para refrescar toda la lista y emitir un evento al padre de actualizado
-      const refreshAllCandidates = async () => {
-        await getCandidatesByVacancyId()
-        emit('updated', true)
-      }
+  // funcion para refrescar toda la lista y emitir un evento al padre de actualizado
+  const refreshAllCandidates = async () => {
+    await getCandidatesByVacancyId()
+    emit('updated', true)
+  }
 
-      // primer filtro de la busqueda de texto
-      const candidatesFilteredByText = computed(() => {
+  // primer filtro de la busqueda de texto
+  const candidatesFilteredByText = computed(() => {
 
-        //si no hay nada escrito en el filtro de busqueda devolvemos todos los candidatos
-        if (!props.textoFiltro) {
-          return candidates.value
-        }
-
-        const filtro = props.textoFiltro.toLowerCase().trim()
-
-        //candidatos filtrado por posibles valores
-        return candidates.value.filter(c =>
-          c.firstName.toLowerCase().includes(filtro) ||
-          c.lastName.toLowerCase().includes(filtro) ||
-          c.email.toLowerCase().includes(filtro) ||
-          c.status?.name.toLowerCase().includes(filtro)
-        )
-      })
-
-      /**
-       * candidatesFilteredByText ya tiene filtrados los candidatos por busqueda de texto
-       * con filteredcandidates filtramos por estados 
-       */
-      const filteredCandidates = (statusId: string) => {
-        return candidatesFilteredByText.value.filter(c => c.statusId === statusId)
-      }
-
-
-      /**
-       * --------------------------
-       * DRAG & DROP
-       * --------------------------
-       */
-
-        //candidato que se seleccionara a mover
-        const dragCandidate = ref<Candidate | null>(null)
-
-        // al mover el candidato se dispara arrastrarCandidato
-        const arrastrarCandidato = (event: DragEvent, candidate: Candidate) => {
-          dragCandidate.value = candidate
-          //efecto permitido de mover 
-          event.dataTransfer!.effectAllowed = 'move'
-        }
-
-        // se dispara al soltar sobre una columna de estado
-        const soltarCandidato = async (event: DragEvent, newStatusId: string) => {
-          
-          //IMPORTATE , permite realizar el drop
-          event.preventDefault()
-
-          //control de null
-          if (!dragCandidate.value){
-            return
-          } 
-
-          if(dragCandidate.value.statusId === newStatusId){
-            console.debug("Candidato arrastrado a su mismo estado, no realizamos operacion")
-            return 
-          }
-
-          //generamos una copa del candidato con todos sus datos y el status modificado
-          const candidateModificado = { ...dragCandidate.value, statusId: newStatusId };
-
-          await loaderStore.loadWithSpinner((async () => {
-            //actualizamos candidato
-            await candidateStore.updateCandidate(dragCandidate.value!.id, candidateModificado )
-            //recuperamos toda la lista
-            await refreshAllCandidates()
-            //limpiamos candidato arrastrado
-            dragCandidate.value = null
-          })())
-          
-        } 
-
-      /**
-       * --------------------------
-       * DRAG & DROP
-       * --------------------------
-       */
-
-      //cargamos inicialmente estados y candidatos 
-      onMounted(async () => {
-        await getCandidateStatuses()
-        await getCandidatesByVacancyId()
-      })
-
-      return { 
-        vacancyCandidateStatuses, icons, colors, bgColors, filteredCandidates, refreshAllCandidates, arrastrarCandidato, soltarCandidato, t
-      }
+    //si no hay nada escrito en el filtro de busqueda devolvemos todos los candidatos
+    if (!props.textoFiltro) {
+      return candidates.value
     }
 
+    const filtro = props.textoFiltro.toLowerCase().trim()
+
+    //candidatos filtrado por posibles valores
+    return candidates.value.filter(c =>
+      c.firstName.toLowerCase().includes(filtro) ||
+      c.lastName.toLowerCase().includes(filtro) ||
+      c.email.toLowerCase().includes(filtro) ||
+      c.status?.name.toLowerCase().includes(filtro)
+    )
   })
 
+  /**
+   * candidatesFilteredByText ya tiene filtrados los candidatos por busqueda de texto
+   * con filteredcandidates filtramos por estados 
+   */
+  const filteredCandidates = (statusId: string) => {
+    return candidatesFilteredByText.value.filter(c => c.statusId === statusId)
+  }
+
+  /**
+   * --------------------------
+   * DRAG & DROP
+   * --------------------------
+   */
+
+  //candidato que se seleccionara a mover
+  const dragCandidate = ref<Candidate | null>(null)
+
+  // al mover el candidato se dispara arrastrarCandidato
+  const arrastrarCandidato = (event: DragEvent, candidate: Candidate) => {
+    dragCandidate.value = candidate
+    //efecto permitido de mover 
+    event.dataTransfer!.effectAllowed = 'move'
+  }
+
+  // se dispara al soltar sobre una columna de estado
+  const soltarCandidato = async (event: DragEvent, newStatusId: string) => {
+    
+    //IMPORTATE , permite realizar el drop
+    event.preventDefault()
+
+    //control de null
+    if (!dragCandidate.value){
+      return
+    } 
+
+    if(dragCandidate.value.statusId === newStatusId){
+      console.debug("Candidato arrastrado a su mismo estado, no realizamos operacion")
+      return 
+    }
+
+    //generamos una copia del candidato con todos sus datos y el status modificado
+    const candidateModificado = { ...dragCandidate.value, statusId: newStatusId }
+
+    await loaderStore.loadWithSpinner((async () => {
+      //actualizamos candidato
+      await candidateStore.updateCandidate(dragCandidate.value!.id, candidateModificado )
+      //recuperamos toda la lista
+      await refreshAllCandidates()
+      //limpiamos candidato arrastrado
+      dragCandidate.value = null
+    })())
+    
+  } 
+
+  /**
+   * --------------------------
+   * DRAG & DROP
+   * --------------------------
+   */
+
+  //cargamos inicialmente estados y candidatos 
+  onMounted(async () => {
+    await getCandidateStatuses()
+    await getCandidatesByVacancyId()
+  })
 </script>
