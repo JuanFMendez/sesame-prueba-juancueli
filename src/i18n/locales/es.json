@@ -1,0 +1,53 @@
+{
+  "alert": {
+    "candidateAdded": "Candidato agregado correctamente.",
+    "candidateUpdated": "Candidato modificado correctamente."
+  },
+  "label": {
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Correo electrónico",
+    "status": "Estado",
+    "phone": "Teléfono",
+    "startDate": "Fecha de inicio",
+    "address": "Dirección",
+    "comment": "Comentario"
+  },
+  "placeholder": {
+    "validEmail": "Introduce un correo válido",
+    "validPhone": "Introduce un teléfono válido"
+  },
+  "btn": {
+    "cancel": "Cancelar",
+    "submitAdd": "Añadir candidato",
+    "submitUpdate": "Actualizar candidato",
+    "add": "Añadir candidato",
+    "edit": "Editar candidato"
+  },
+  "search": {
+    "placeholder": "Buscar",
+    "vacanciesTooltip": "Buscar por ID, nombre, descripción, estado o tipo de contrato",
+    "candidatesTooltip": "Buscar candidatos por nombre, apellido, email ó estado."
+  },
+  "messages": {
+    "noCandidates": "No hay candidatos en este estado"
+  },
+  "tabs": {
+    "vacancies": "Vacantes",
+    "candidates": "Candidatos"
+  },
+  "menu": {
+    "edit": "Modificar"
+  },
+  "sidebar": {
+    "admin": "ADMINISTRADOR",
+    "talent": "Talento",
+    "recruitment": "Reclutamiento"
+  },
+  "date": {
+    "notAvailable": "No disponible",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "daysAgo": "{count} días"
+  }
+}

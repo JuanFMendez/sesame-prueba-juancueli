@@ -15,8 +15,8 @@
         <div class="flex justify-between items-center cursor-pointer mb-1 text-gray-600 select-none text-base"
           @click="nivel1.open = !nivel1.open"
         >
-          <!-- titulo nivel 1-->
-          <span>{{ nivel1.title }}</span>
+          <!-- titulo nivel 1 (i18n) -->
+          <span>{{ t(nivel1.title) }}</span>
           <ChevronDown :class="{'rotate-180': nivel1.open}" class="w-4 h-4 transition-transform duration-200" />
         </div>
 
@@ -28,10 +28,10 @@
             <div class="flex justify-between items-center cursor-pointer text-lila font-normal select-none text-base"
               @click="nivel2.open = !nivel2.open"
             >
-              <!-- titulo nivel 2 -->
+              <!-- titulo nivel 2 (i18n) -->
               <div class="flex items-center">
                 <component :is="nivel2.icon" class="w-4 h-4 mr-2" />
-                <span>{{ nivel2.title }}</span>
+                <span>{{ t(nivel2.title) }}</span>
               </div>
               <ChevronDown :class="{'rotate-180': nivel2.open}" class="w-4 h-4 transition-transform duration-200" />
             </div>
@@ -42,8 +42,8 @@
               :class="nivel3.active ? 'border-l-2 border-lila ml-1' : ''"
               @click="selectItem(nivel3)"
             >
-              <!-- opciones nivel 3 -->
-              <span :class="nivel3.active ? 'font-bold' : 'font-normal'">{{ nivel3.title }}</span>
+              <!-- opciones nivel 3 (i18n) -->
+              <span :class="nivel3.active ? 'font-bold' : 'font-normal'">{{ t(nivel3.title) }}</span>
             </div>
 
           </div>
@@ -59,6 +59,7 @@ import { ref } from 'vue'
 import { ChevronDown, Star } from 'lucide-vue-next'
 import logo from '../assets/logo-sesame.png'
 import type { MenuItem } from '../domain/entities/MenuItem'
+import { useI18n } from 'vue-i18n'
 
 export default {
   name: 'SidebarMenu',
@@ -66,18 +67,20 @@ export default {
   emits: ['selectItem'],
   setup(props, { emit }) {
 
+    const { t } = useI18n()
+
     // generamos menu dinamico
     const menu = ref([
       {
-        title: 'ADMINISTRADOR', // nivel 1
+        title: 'sidebar.admin', // nivel 1 (i18n)
         open: true,
         children: [
           {
-            title: 'Talento', // nivel 2
+            title: 'sidebar.talent', // nivel 2 (i18n)
             icon: Star,
             open: true,
             children: [
-               { title: 'Reclutamiento', active: true } // nivel 3               
+               { title: 'sidebar.recruitment', active: true } // nivel 3 (i18n)             
             ]
           }
         ]
@@ -106,7 +109,7 @@ export default {
 
     }
 
-    return { logo, menu, selectItem }
+    return { logo, menu, selectItem, t }
   }
 }
 </script>

@@ -35,7 +35,7 @@
           <!-- mostramos mensaje de no existen candidatos en estado-->
           <template v-else>
             <div class="text-gray-400 text-sm text-center mt-4">
-              No hay candidatos en este estado
+              {{ t('messages.noCandidates') }}
             </div>
           </template>
 
@@ -48,13 +48,14 @@
 <script lang="ts">
 
   import { defineComponent, ref, onMounted, computed } from 'vue'
-  import CandidateCard from '../CandidateCard.vue'
+  import CandidateCard from './CandidateCard.vue'
   import { useCandidateStore } from '../../store/candidateStore'
   import { useLoaderStore } from '../../store/loaderStore'
   import { VacancyService } from '../../infra/services/VacancyService'
   import type { CandidateStatus } from '../../domain/entities/CandidateStatus'
   import type { Candidate } from '../../domain/entities/Candidate'
   import { Archive, User, PartyPopper, Ban } from 'lucide-vue-next'
+  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     name: 'TableDisplayVacantes',
@@ -66,6 +67,8 @@
     components: {  CandidateCard, Archive, User, PartyPopper, Ban },
     setup(props, { emit }) {
 
+      const { t } = useI18n()
+      
       const loaderStore = useLoaderStore()
       const vacancyService = new VacancyService()
       const candidateStore = useCandidateStore()
@@ -198,7 +201,7 @@
       })
 
       return { 
-        vacancyCandidateStatuses, icons, colors, bgColors, filteredCandidates, refreshAllCandidates, arrastrarCandidato, soltarCandidato
+        vacancyCandidateStatuses, icons, colors, bgColors, filteredCandidates, refreshAllCandidates, arrastrarCandidato, soltarCandidato, t
       }
     }
 

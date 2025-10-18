@@ -20,11 +20,11 @@
         <!-- Nombre y Apellido -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-normal mb-1 text-lila">Nombre <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.firstName') }} <span class="text-red-500">*</span></label>
             <input v-model="candidate.firstName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required minlength="2" maxlength="30" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$" />
           </div>
           <div>
-            <label class="block text-sm font-normal mb-1 text-lila">Apellido <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.lastName') }} <span class="text-red-500">*</span></label>
             <input v-model="candidate.lastName" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required minlength="2" maxlength="30" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$" />
           </div>
         </div>
@@ -32,44 +32,44 @@
         <!-- Email y Estado -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-normal mb-1 text-lila">Email <span class="text-red-500">*</span></label>
-            <input v-model="candidate.email" type="email" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Introduce un email válido" />
+            <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.email') }} <span class="text-red-500">*</span></label>
+            <input v-model="candidate.email" type="email" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" :title="t('placeholder.validEmail')" />
           </div>
           <div>
-            <label class="block text-sm font-normal mb-1 text-lila">Estado <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.status') }} <span class="text-red-500">*</span></label>
             <select v-model="candidate.statusId" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required>
               <option v-for="status in vacancyCandidateStatuses" :key="status.id" :value="status.id">{{ status.name }}</option>
             </select>
           </div>
         </div>
 
-        <!-- Telefono y Fecha de inicio -->
+        <!-- Teléfono y Fecha de inicio -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-normal mb-1 text-lila">Teléfono <span class="text-red-500">*</span></label>
-            <input v-model="candidate.phone" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required pattern="^\d{9}$" title="Introduce exactamente 9 números" />
+            <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.phone') }} <span class="text-red-500">*</span></label>
+            <input v-model="candidate.phone" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required pattern="^\d{9}$" :title="t('placeholder.validPhone')" />
           </div>
           <div>
-            <label class="block text-sm font-normal mb-1 text-lila">Fecha de inicio <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.startDate') }} <span class="text-red-500">*</span></label>
             <input v-model="candidate.startWorkDate" :min="minHoy" type="date" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" required />
           </div>
         </div>
 
         <!-- Dirección -->
         <div>
-          <label class="block text-sm font-normal mb-1 text-lila">Dirección</label>
+          <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.address') }}</label>
           <input v-model="candidate.address" type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" minlength="5" maxlength="50" />
         </div>
 
         <!-- Comentario -->
         <div>
-          <label class="block text-sm font-normal mb-1 text-lila">Comentario</label>
+          <label class="block text-sm font-normal mb-1 text-lila">{{ t('label.comment') }}</label>
           <textarea v-model="candidate.comment" class="w-full border border-gray-300 rounded-md px-3 py-2 focus-lila" minlength="5" maxlength="120"></textarea>
         </div>
 
         <!-- Botones -->
         <div class="flex justify-end gap-2 mt-4">
-          <button type="button" class="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 button-focus" @click="closeModal">Cancelar</button>
+          <button type="button" class="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 button-focus" @click="closeModal">{{ t('btn.cancel') }}</button>
           <button type="submit" class="px-4 py-2 rounded-md btn-lila disabled:opacity-50 button-focus" :disabled="!formIsValid">{{ submitButtonText }}</button>
         </div>
 
@@ -80,172 +80,155 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref, computed, onMounted } from 'vue'
-  import { useCandidateStore } from '../../../store/candidateStore'
-  import { VacancyService } from '../../../infra/services/VacancyService'
-  import type { Candidate } from '../../../domain/entities/Candidate'
-  import type { CandidateStatus } from '../../../domain/entities/CandidateStatus'
-  import { useLoaderStore } from '../../../store/loaderStore'
-  import { Alerta } from '../../../domain/entities/Alerta'
-  import AlertMessage from '../../AlertMessage.vue'
+import { defineComponent, reactive, ref, computed, onMounted } from 'vue'
+import { useCandidateStore } from '../../../store/candidateStore'
+import { VacancyService } from '../../../infra/services/VacancyService'
+import type { Candidate } from '../../../domain/entities/Candidate'
+import type { CandidateStatus } from '../../../domain/entities/CandidateStatus'
+import { useLoaderStore } from '../../../store/loaderStore'
+import { Alerta } from '../../../domain/entities/Alerta'
+import AlertMessage from '../../AlertMessage.vue'
+import { useI18n } from 'vue-i18n'
 
-  export default defineComponent({
-    name: 'CandidateModal',
-    props: {
-      candidateData: { type: Object as () => Candidate, required: false }
-    },
-    emits: ['close', 'added', 'updated'],
-    components: { AlertMessage },
-    setup(props, { emit }) {
+export default defineComponent({
+  name: 'CandidateModal',
+  props: { candidateData: { type: Object as () => Candidate, required: false } },
+  emits: ['close', 'added', 'updated'],
+  components: { AlertMessage },
+  setup(props, { emit }) {
 
-      const candidateStore = useCandidateStore()
-      const loaderStore = useLoaderStore()
-      const vacancyService = new VacancyService();
+    const { t } = useI18n()
 
-      const vacancyId = import.meta.env.VITE_DEFAULT_VACANCY_ID
+    const candidateStore = useCandidateStore()
+    const loaderStore = useLoaderStore()
+    const vacancyService = new VacancyService()
 
-      //fecha minima para el calendario
-      const minHoy = new Date().toISOString().split('T')[0] 
+    const vacancyId = import.meta.env.VITE_DEFAULT_VACANCY_ID
 
-      //titulo del modal si tiene o no datos el candidato
-      const modalTitle = computed(() =>
-        props.candidateData ? 'Editar candidato' : 'Añadir nuevo candidato'
-      )
+    //fecha minima para el calendario
+    const minHoy = new Date().toISOString().split('T')[0] 
 
-      //texto boton si tiene o no datos el candidato
-      const submitButtonText = computed(() =>
-        candidate.id ? 'Actualizar candidato' : 'Añadir candidato'
-      )
+    //titulo del modal
+    const modalTitle = computed(() =>
+      props.candidateData ? t('btn.edit') : t('btn.submitAdd')
+    )
 
-      //alerta para error o accion correcta
-      const alerta = reactive(new Alerta(''))
+    //texto boton submit
+    const submitButtonText = computed(() =>
+      props.candidateData?.id ? t('btn.submitUpdate') : t('btn.submitAdd')
+    )
 
-      // Lista de estados de candidato
-      const vacancyCandidateStatuses = ref<CandidateStatus[]>([])
+    //alerta para error o accion correcta
+    const alerta = reactive(new Alerta(''))
 
-      // Datos basicos para un candidato nuevo
-      const defaultCandidate: Candidate = {
-        id: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        linkedInURL: '',
-        desiredSalary: '',
-        startWorkDate: '',
-        web: '',
-        location: '',
-        vacancyId, // por defecto ya lleva la vacanteId
-        statusId: '',
-        address: '',
-        comment: '',
-        appliedAt: new Date().toISOString(),
-        type: '',
-        hasDocument: false,
-        imageProfileURL: '',
-        evaluation: 0,
-        threadId: '',
-        lastComment: null,
-        numComments: 0,
-        createdAt: '',
-        updatedAt: '',
-        employeeId: '',
-        vacancy: { id: '', name: '', companyId: '', status: '' },
-        status: { id: '', name: '', companyId: '', order: 0 }
-      }
+    // Lista de estados de candidato
+    const vacancyCandidateStatuses = ref<CandidateStatus[]>([])
 
-      // O recogemos el candidato en un props o hacemos una copia de los datos iniciales
-      const candidate = reactive<Candidate>({ ...defaultCandidate, ...props.candidateData })
+    // Datos basicos para un candidato nuevo
+    const defaultCandidate: Candidate = {
+      id: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      linkedInURL: '',
+      desiredSalary: '',
+      startWorkDate: '',
+      web: '',
+      location: '',
+      vacancyId,
+      statusId: '',
+      address: '',
+      comment: '',
+      appliedAt: new Date().toISOString(),
+      type: '',
+      hasDocument: false,
+      imageProfileURL: '',
+      evaluation: 0,
+      threadId: '',
+      lastComment: null,
+      numComments: 0,
+      createdAt: '',
+      updatedAt: '',
+      employeeId: '',
+      vacancy: { id: '', name: '', companyId: '', status: '' },
+      status: { id: '', name: '', companyId: '', order: 0 }
+    }
 
-      // Validaciones del formulario 
-      const formIsValid = computed(() =>
-        candidate.firstName.trim() &&
-        candidate.lastName.trim() &&
-        candidate.email.trim() &&
-        candidate.phone.trim() &&
-        candidate.statusId &&
-        candidate.startWorkDate
-      )
-      
-      onMounted(async () => {
+    // candidato reactivo, ya sea nuevo o pasado por props
+    const candidate = reactive<Candidate>({ ...defaultCandidate, ...props.candidateData })
 
-        // por defecto cierra la alerta
-        alerta.cerrar()
+    // Validaciones del formulario 
+    const formIsValid = computed(() =>
+      candidate.firstName.trim() &&
+      candidate.lastName.trim() &&
+      candidate.email.trim() &&
+      candidate.phone.trim() &&
+      candidate.statusId &&
+      candidate.startWorkDate
+    )
+    
+    onMounted(async () => {
+      alerta.cerrar()
+      await loaderStore.loadWithSpinner(
+        (async () => {
+          try {
+            vacancyCandidateStatuses.value = await vacancyService.getCandidateStatuses(vacancyId)
 
-        await loaderStore.loadWithSpinner(
-          (async () => {
-            try {
-
-              // carga los estados de candidato disponibles              
-              vacancyCandidateStatuses.value = await vacancyService.getCandidateStatuses(vacancyId)
-
-              // Si no hay estados disponibles, muestra error
-              if (!vacancyCandidateStatuses.value || vacancyCandidateStatuses.value.length === 0) {
-                alerta.message = 'No hay estados de candidato disponibles'
-                alerta.tipo = 'error'
-                alerta.visible = true                
-
-              // Si el candidato tiene estado lo mantiene por defecto para mostrar. Si no, asigna el primero de la lista            
-              } else if (!candidate.statusId && vacancyCandidateStatuses.value[0]) {
-                candidate.statusId = vacancyCandidateStatuses.value[0].id
-              }
-
-            } catch (error) {
-              console.error('Error cargando estados del candidato:', error)
-              alerta.message = 'Error cargando estados del candidato'
+            if (!vacancyCandidateStatuses.value || vacancyCandidateStatuses.value.length === 0) {
+              alerta.message = t('No hay estados de candidato disponibles')
               alerta.tipo = 'error'
-              alerta.visible = true              
-            }
-          })()
-        )
-      })
-
-      // Submit formulario
-      const submitForm = async () => {
-        await loaderStore.loadWithSpinner(
-          (async () => {
-            try {
-
-              // Limpiar campos de texto de espacios en blanco
-              candidate.firstName = candidate.firstName.trim()
-              candidate.lastName = candidate.lastName.trim()
-              candidate.email = candidate.email.trim()
-              candidate.phone = candidate.phone.trim()
-              candidate.address = candidate.address?.trim() || ''
-              candidate.comment = candidate.comment?.trim() || ''
-
-              // Si el candidato tiene id, se actualiza.
-              if (candidate.id) {
-                await candidateStore.updateCandidate(candidate.id, candidate)
-                emit('updated', true)
-
-              // Si no tiene id, se crea uno nuevo
-              } else {
-                await candidateStore.addCandidateToVacancy(candidate)
-                emit('added', true)
-
-              }
-              //cerramos modal
-              closeModal()
-
-            } catch (error) {
-
-              console.error('Error en la gestion del candidato:', error)
-              alerta.message = 'Error en la gestion del candidato'
-              alerta.tipo = 'error'
-              alerta.visible = true              
+              alerta.visible = true
+            } else if (!candidate.statusId && vacancyCandidateStatuses.value[0]) {
+              candidate.statusId = vacancyCandidateStatuses.value[0].id
             }
 
-          })()
-        )
-      }
+          } catch (error) {
+            console.error('Error cargando estados del candidato:', error)
+            alerta.message = t('Error cargando estados del candidato')
+            alerta.tipo = 'error'
+            alerta.visible = true              
+          }
+        })()
+      )
+    })
 
-      //funcion simplicar emit
-      const closeModal = () => emit('close')
+    const submitForm = async () => {
+      await loaderStore.loadWithSpinner(
+        (async () => {
+          try {
+            candidate.firstName = candidate.firstName.trim()
+            candidate.lastName = candidate.lastName.trim()
+            candidate.email = candidate.email.trim()
+            candidate.phone = candidate.phone.trim()
+            candidate.address = candidate.address?.trim() || ''
+            candidate.comment = candidate.comment?.trim() || ''
 
-      return { candidate, vacancyCandidateStatuses, submitForm, closeModal, formIsValid, alerta, modalTitle, submitButtonText , minHoy}
-      
-    },
-  })
+            if (candidate.id) {
+              await candidateStore.updateCandidate(candidate.id, candidate)
+              emit('updated', true)
+            } else {
+              await candidateStore.addCandidateToVacancy(candidate)
+              emit('added', true)
+            }
 
+            closeModal()
+          } catch (error) {
+            console.error('Error en la gestion del candidato:', error)
+            alerta.message = t('Error en la gestion del candidato')
+            alerta.tipo = 'error'
+            alerta.visible = true              
+          }
+        })()
+      )
+    }
+
+    const closeModal = () => emit('close')
+
+    return { 
+      candidate, vacancyCandidateStatuses, submitForm, closeModal, formIsValid, alerta, modalTitle, submitButtonText, minHoy, t
+    }
+    
+  }
+})
 </script>

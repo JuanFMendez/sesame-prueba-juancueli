@@ -1,18 +1,15 @@
 <template>
-  <div class="flex min-h-screen w-full bg-gray-100 px-26">
-
+  <div class="flex min-h-screen w-full bg-gray-100 pl-10">
     <div class="flex flex-1 h-screen relative">
-      
-      <div class="absolute top-4 bottom-4 right-0 w-px bg-gray-300/50"></div>
-      
+            
       <!-- Menu lateral-->
       <Sidebar class="flex-none h-full w-56" @selectItem="seccionSeleccionada = $event"/>
 
-      <!-- Área principal segun seleccion de aside-->
-      <div class="flex-1 flex flex-col h-full mx-6" v-if="seccionSeleccionada === 'Reclutamiento'" >
-
+      <!-- Área principal según selección de aside-->
+      <div class="flex-1 flex flex-col h-full ml-8 border-r-1 pr-6 border-gray-200" 
+           v-if="seccionSeleccionada === 'recruitment'" >
         <!-- Cabecera -->
-        <HeaderApp :titulo="'Reclutamiento'"/>
+        <HeaderApp :titulo="t('sidebar.recruitment')"/>
         
         <!-- Contenedor principal -->
         <div class="flex-1 p-6 bg-white rounded-3xl shadow-md flex flex-col overflow-auto space-y-4 mt-2 mb-6 border border-gray-200">          
@@ -21,31 +18,28 @@
       </div>
 
     </div>
-
   </div>
 </template>
 
 <script lang="ts">
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-  import Sidebar from '../components/SidebarMenu.vue'
-  import HeaderApp from '../components/HeaderApp.vue'
-  import GestionBoard from '../components/gestion-candidatos/GestionBoard.vue'
+import Sidebar from '../components/SidebarMenu.vue'
+import HeaderApp from '../components/HeaderApp.vue'
+import GestionBoard from '../components/gestion-candidatos/GestionBoard.vue'
+import LanguageSelect from '../components/LanguageSelect.vue'
 
-  import { ref } from 'vue'
+export default {
+  name: 'Home',
+  components: { Sidebar, HeaderApp, GestionBoard, LanguageSelect },
+  setup() {
+    const { t } = useI18n()
 
-  export default {
-    name: 'Home',
-    components: {
-      Sidebar,
-      HeaderApp,
-      GestionBoard
-    },
-    setup() {
-
-      //valor por defecto porque solo hay una seccion actualmente en el aside
-      const seccionSeleccionada = ref('Reclutamiento')
+    // valor por defecto porque solo hay una sección actualmente en el aside
+    const seccionSeleccionada = ref('recruitment')
       
-      return { seccionSeleccionada }
-    }
+    return { seccionSeleccionada, t }
   }
+}
 </script>

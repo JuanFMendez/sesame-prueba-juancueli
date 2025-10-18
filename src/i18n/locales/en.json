@@ -1,0 +1,53 @@
+{
+  "alert": {
+    "candidateAdded": "Candidate added successfully.",
+    "candidateUpdated": "Candidate updated successfully."
+  },
+  "label": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "status": "Status",
+    "phone": "Phone",
+    "startDate": "Start date",
+    "address": "Address",
+    "comment": "Comment"
+  },
+  "placeholder": {
+    "validEmail": "Enter a valid email",
+    "validPhone": "Enter a valid phone number"
+  },
+  "btn": {
+    "cancel": "Cancel",
+    "submitAdd": "Add candidate",
+    "submitUpdate": "Update candidate",
+    "add": "Add candidate",
+    "edit": "Edit candidate"
+  },
+  "search": {
+    "placeholder": "Search",
+    "vacanciesTooltip": "Search by ID, name, description, status, or contract type",
+    "candidatesTooltip": "Search candidates by first name, last name, email, or status."
+  },
+  "messages": {
+    "noCandidates": "There are no candidates in this status"
+  },
+  "tabs": {
+    "vacancies": "Vacancies",
+    "candidates": "Candidates"
+  },
+  "menu": {
+    "edit": "Edit"
+  },
+  "sidebar": {
+    "admin": "ADMINISTRATOR",
+    "talent": "Talent",
+    "recruitment": "Recruitment"
+  },
+    "date": {
+    "notAvailable": "Not available",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{count} days"
+  }
+}

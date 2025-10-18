@@ -34,6 +34,7 @@
   import TableDisplayCandidatos from './TableDisplayCandidatos.vue'
   import { Alerta } from '../../domain/entities/Alerta'
   import AlertMessage from '../AlertMessage.vue'
+  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     name: 'GestionBoard',
@@ -46,6 +47,8 @@
       AlertMessage
     },
     setup() {
+
+      const { t } = useI18n()
 
       const activeSection = ref('vacantes')
       const searchText = ref('')
@@ -71,11 +74,11 @@
 
       // Maneja la accion de agregar un candidato
       const onCandidateAdded = (success: boolean) => {
-        if (success) mostrarAlertaExito('Candidato agregado correctamente.')
+        if (success) mostrarAlertaExito(t('alert.candidateAdded'))
       }
       // Maneja la accion de actualizar un candidato
       const onCandidateUpdated = (success: boolean) => {
-        if (success) mostrarAlertaExito('Candidato modificado correctamente.')
+        if (success) mostrarAlertaExito(t('alert.candidateUpdated'))
       }
 
       onMounted(() => {

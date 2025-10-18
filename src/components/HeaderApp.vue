@@ -1,35 +1,23 @@
 <template>
-
-  <!-- titulo principal  -->
   <header class="w-full px-4 py-2 bg-gray-100 flex justify-between items-center">
     
-    <!-- titulo de la seccion-->
-    <h1 class="text-3xl text-azulOscuro font-bold font-especifico">
-      {{ titulo }} 
-    </h1>
+    <h1 class="text-3xl text-azulOscuro font-bold font-especifico">{{ titulo }}</h1>
 
-    <!-- imagen de perfil en la parte derecha -->
-    <img :src="perfilLogo" alt="perfil" class="w-10 h-10 object-contain rounded-full"/>
-    
+    <div class="flex items-center space-x-2">
+      <LanguageSelect />    
+      <img :src="perfilLogo" alt="perfil" class="w-8 h-8 object-contain rounded-full self-center"/>    
+    </div>
+
   </header>
-  
 </template>
 
-<script lang="ts">
 
-  import perfilLogo from '../assets/logo-perfil.png'
+<script setup lang="ts">
+import perfilLogo from '../assets/logo-perfil.png'
+import LanguageSelect from '../components/LanguageSelect.vue'
 
-  export default {
-    name: 'HeaderApp',
-      props: {
-      titulo: {
-        type: String,
-        required: true
-      }
-    },
-    setup() {
-      return { perfilLogo }
-    }
-  }
+const props = defineProps<{ titulo: string }>()
+
+
 
 </script>

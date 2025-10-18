@@ -8,10 +8,10 @@
         <thead class="bg-gray-200">
 
           <tr class="select-none">
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Nombre</th>
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Apellido</th>
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Email</th>
-            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">Estado</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">{{ t('label.firstName') }}</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">{{ t('label.lastName') }}</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">{{ t('label.email') }}</th>
+            <th class="px-4 py-3 text-center text-lg text-lila font-bold font-especifico">{{ t('label.status') }}</th>
             <th class="px-4 py-3 text-right text-lg text-lila font-bold w-36"></th>
           </tr>
 
@@ -33,7 +33,7 @@
             <td class="px-4 py-3 w-36">
               <div class="flex justify-end gap-2">
                 <button @click="openEditarCandidato(candidato)" class="font-especifico-ligth btn-azulOscuro text-sm font-normal px-4 py-1.5 rounded-xl shadow-sm">
-                  Editar
+                  {{ t('btn.edit') }}
                 </button>                
               </div>              
             </td>
@@ -60,6 +60,7 @@
   import CandidateModal from './addCandidate/CandidateModal.vue'
   import type { Candidate } from '../../domain/entities/Candidate'
   import { useLoaderStore } from '../../store/loaderStore'
+  import { useI18n } from 'vue-i18n'
 
   export default defineComponent({
     components: { CandidateModal },
@@ -69,6 +70,8 @@
     emits: ['updated'],
     setup(props, { emit }) {
 
+      const { t } = useI18n()
+      
       const candidateStore = useCandidateStore()
       const loaderStore = useLoaderStore()
       const candidates = ref<Candidate[]>([])
@@ -140,7 +143,7 @@
         }
       }
 
-      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates, getColorByStatus }
+      return { candidates, candidatosFiltradosByBusqueda, showCandidateModal, candidateToEdit, openEditarCandidato, refreshCandidates, getColorByStatus, t }
     },
   })
 

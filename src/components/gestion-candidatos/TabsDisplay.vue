@@ -9,7 +9,7 @@
         :class="[ 'border-b-2 px-4 py-2', activeTab === 'vacantes' ? 'text-lila font-bold font-especifico' : 'border-transparent text-gray-300 font-normal opacity-50 font-especifico-ligth']"
         @click="seccionSelected('vacantes')"
       >
-        Vacantes
+        {{ t('tabs.vacancies') }}
       </button>
 
       <!-- pestaña candidatos -->
@@ -17,7 +17,7 @@
         :class="['border-b-2 px-4 py-2', activeTab === 'candidatos' ? 'text-lila font-bold font-especifico': 'border-transparent text-gray-300 font-normal opacity-50 font-especifico-ligth']"
         @click="seccionSelected('candidatos')"
       >
-        Candidatos
+        {{ t('tabs.candidates') }}
       </button>
     </div>
 
@@ -27,11 +27,14 @@
 
 <script lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default {
   name: 'TabsDisplay',
   emits: ['seccionSelected'], 
   setup(props, { emit }) {
+
+    const { t } = useI18n()
 
     //tab activa por defecto
     const activeTab = ref('vacantes')
@@ -42,7 +45,7 @@ export default {
       emit('seccionSelected', tabSeleccionado) 
     }
 
-    return { activeTab, seccionSelected }
+    return { activeTab, seccionSelected, t }
   }
 }
 </script>

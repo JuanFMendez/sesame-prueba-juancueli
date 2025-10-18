@@ -1,6 +1,6 @@
 import { mount, flushPromises } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
-import CandidateCard from '../../components/CandidateCard.vue'
+import CandidateCard from '../../components/gestion-candidatos/CandidateCard.vue'
 import { formatearFecha } from '../../utils/dateUtil'
 
 // Mock de CandidateModal para no renderizarlo realmente
