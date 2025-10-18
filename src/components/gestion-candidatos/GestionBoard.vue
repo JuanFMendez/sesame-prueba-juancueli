@@ -11,7 +11,7 @@
     </div>
 
     <!-- mensajes de alerta -->
-    <AlertMessage v-if="alerta.visible" :message="alerta.message" @close="alerta.cerrar()" />
+    <AlertMessage v-if="alerta.visible" :message="alerta.message" :tipo="alerta.tipo" @close="alerta.cerrar()" />
 
     <!-- Contenedor principal de displays -->
     <div class="flex-1 rounded-lg overflow-auto w-full flex flex-col"> 

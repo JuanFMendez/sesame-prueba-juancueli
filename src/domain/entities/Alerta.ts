@@ -1,12 +1,12 @@
 export class Alerta {
   message: string
   visible: boolean
-  tipo: 'error' | 'success'
+  tipo: 'success' | 'error'
 
   constructor(message: string = '') {
     this.message = message
     this.visible = true
-    this.tipo = 'error'
+    this.tipo = 'success'
   }
   cerrar() {
     this.visible = false
